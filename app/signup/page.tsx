@@ -1,0 +1,93 @@
+'use client'
+import './signup.css'
+import { useState } from 'react'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+
+export default function SignupPage() {
+  const [form, setForm] = useState({ name:'', email:'', password:'', confirm:'', zone:'Homagama' })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (form.password !== form.confirm) { setError('Passwords do not match'); return }
+    if (form.password.length < 8) { setError('Password must be at least 8 characters'); return }
+    setLoading(true)
+    setError('')
+    const res = await fetch('/api/auth/register', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name:form.name, email:form.email, password:form.password, zone:form.zone })
+    })
+    const data = await res.json()
+    if (!res.ok) { setError(data.error || 'Registration failed'); setLoading(false); return }
+    const login = await signIn('credentials', { email:form.email, password:form.password, redirect:false })
+    if (login?.error) { setError('Account created. Please sign in.'); setLoading(false); return }
+    router.push('/dashboard')
+  }
+
+  return (
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'linear-gradient(135deg,#0F1F18 0%,#1A3328 50%,#0F1F18 100%)',fontFamily:'Plus Jakarta Sans,sans-serif',padding:'24px'}}>
+      <div style={{width:'100%',maxWidth:460}}>
+        <div style={{textAlign:'center',marginBottom:36}}>
+          <div style={{width:56,height:56,borderRadius:16,background:'#2D5A3D',margin:'0 auto 16px',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:18,color:'#fff'}}>MC</div>
+          <div style={{fontSize:26,fontWeight:800,color:'#fff',letterSpacing:'-.02em'}}>MyCollect</div>
+          <div style={{fontFamily:'DM Mono,monospace',fontSize:11,color:'rgba(255,255,255,.4)',marginTop:6,letterSpacing:'.1em',textTransform:'uppercase'}}>Create your account</div>
+        </div>
+
+        <div className="card" style={{background:'rgba(255,255,255,.05)',backdropFilter:'blur(24px)',WebkitBackdropFilter:'blur(24px)',border:'1px solid rgba(255,255,255,.1)',borderRadius:20,padding:36}}>
+          <div style={{fontSize:20,fontWeight:700,color:'#fff',marginBottom:6}}>Get started</div>
+          <div style={{fontFamily:'DM Mono,monospace',fontSize:11,color:'rgba(255,255,255,.35)',marginBottom:28,letterSpacing:'.04em'}}>Homagama Municipal Zone</div>
+
+          <form onSubmit={handleSubmit} style={{display:'flex',flexDirection:'column',gap:14}}>
+            <div>
+              <div style={{fontSize:12,fontWeight:600,color:'rgba(255,255,255,.5)',marginBottom:7,letterSpacing:'.04em'}}>FULL NAME</div>
+              <input className="inp" type="text" placeholder="Your full name" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} required/>
+            </div>
+            <div>
+              <div style={{fontSize:12,fontWeight:600,color:'rgba(255,255,255,.5)',marginBottom:7,letterSpacing:'.04em'}}>EMAIL</div>
+              <input className="inp" type="email" placeholder="you@example.com" value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} required/>
+            </div>
+            <div>
+              <div style={{fontSize:12,fontWeight:600,color:'rgba(255,255,255,.5)',marginBottom:7,letterSpacing:'.04em'}}>ZONE</div>
+              <select className="inp" value={form.zone} onChange={e=>setForm(f=>({...f,zone:e.target.value}))}>
+                <option value="Homagama">Homagama</option>
+                <option value="Colombo">Colombo</option>
+                <option value="Nugegoda">Nugegoda</option>
+                <option value="Maharagama">Maharagama</option>
+              </select>
+            </div>
+            <div>
+              <div style={{fontSize:12,fontWeight:600,color:'rgba(255,255,255,.5)',marginBottom:7,letterSpacing:'.04em'}}>PASSWORD</div>
+              <input className="inp" type="password" placeholder="Min. 8 characters" value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} required/>
+            </div>
+            <div>
+              <div style={{fontSize:12,fontWeight:600,color:'rgba(255,255,255,.5)',marginBottom:7,letterSpacing:'.04em'}}>CONFIRM PASSWORD</div>
+              <input className="inp" type="password" placeholder="Repeat password" value={form.confirm} onChange={e=>setForm(f=>({...f,confirm:e.target.value}))} required/>
+            </div>
+
+            {error && (
+              <div style={{padding:'10px 14px',borderRadius:8,background:'rgba(220,38,38,.12)',border:'1px solid rgba(220,38,38,.25)',color:'#FCA5A5',fontSize:13,fontFamily:'DM Mono,monospace'}}>{error}</div>
+            )}
+
+            <button className="btn" type="submit" disabled={loading} style={{marginTop:4}}>
+              {loading && <span className="spinner"/>}
+              {loading ? 'Creating account...' : 'Create Account'}
+            </button>
+          </form>
+
+          <div style={{marginTop:20,paddingTop:18,borderTop:'1px solid rgba(255,255,255,.08)',textAlign:'center',fontFamily:'DM Mono,monospace',fontSize:12,color:'rgba(255,255,255,.35)'}}>
+            Already have an account?{' '}
+            <Link href="/login" style={{color:'#7AAE8A',textDecoration:'none',fontWeight:500}}>Sign in</Link>
+          </div>
+        </div>
+        <div style={{textAlign:'center',marginTop:24,fontFamily:'DM Mono,monospace',fontSize:10,color:'rgba(255,255,255,.2)',letterSpacing:'.08em'}}>
+          NSBM GREEN UNIVERSITY · BSc HONS SOFTWARE ENGINEERING · 2025–2026
+        </div>
+      </div>
+    </div>
+  )
+}
