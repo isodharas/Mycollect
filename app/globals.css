@@ -33,11 +33,12 @@
     color: #0F2A3D;
     min-height: 100vh;
     background:
-      radial-gradient(ellipse 110% 70% at 0% 0%, rgba(46,134,193,0.14) 0%, transparent 55%),
-      radial-gradient(ellipse 80% 50% at 100% 100%, rgba(76,175,114,0.10) 0%, transparent 55%),
-      radial-gradient(ellipse 60% 70% at 80% 20%, rgba(168,212,245,0.18) 0%, transparent 50%),
-      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(45,122,79,0.06) 0%, transparent 50%),
-      #EBF4FA;
+      radial-gradient(ellipse 120% 80% at 0% 0%, rgba(46,134,193,0.28) 0%, transparent 50%),
+      radial-gradient(ellipse 100% 70% at 100% 100%, rgba(76,175,114,0.22) 0%, transparent 50%),
+      radial-gradient(ellipse 80% 60% at 85% 15%, rgba(168,212,245,0.35) 0%, transparent 45%),
+      radial-gradient(ellipse 60% 50% at 15% 85%, rgba(45,122,79,0.18) 0%, transparent 45%),
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(220,38,38,0.04) 0%, transparent 50%),
+      linear-gradient(135deg, #E8F4FD 0%, #D6EBE0 50%, #E0F0F8 100%);
     background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
   }
@@ -48,7 +49,7 @@
 @layer components {
   /* ═══ GLASSMORPHISM ═══ */
   .glass {
-    background: rgba(255,255,255,0.42);
+    background: rgba(255,255,255,0.30);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border: 1px solid rgba(255,255,255,0.62);
@@ -60,7 +61,7 @@
   }
 
   .glass-card {
-    background: rgba(255,255,255,0.48);
+    background: rgba(255,255,255,0.35);
     backdrop-filter: blur(20px) saturate(170%);
     -webkit-backdrop-filter: blur(20px) saturate(170%);
     border: 1px solid rgba(255,255,255,0.65);
@@ -80,7 +81,7 @@
     height: 100vh;
     position: sticky;
     top: 0;
-    background: rgba(255,255,255,0.55);
+    background: rgba(255,255,255,0.40);
     backdrop-filter: blur(32px) saturate(200%);
     -webkit-backdrop-filter: blur(32px) saturate(200%);
     border-right: 1px solid rgba(255,255,255,0.65);
@@ -92,7 +93,7 @@
   /* ═══ TOPBAR ═══ */
   .topbar {
     height: 58px;
-    background: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.42);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border-bottom: 1px solid rgba(255,255,255,0.65);
@@ -140,7 +141,7 @@
 
   /* ═══ STAT CARD ═══ */
   .stat-card {
-    background: rgba(255,255,255,0.50);
+    background: rgba(255,255,255,0.32);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255,255,255,0.70);

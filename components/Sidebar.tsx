@@ -96,7 +96,7 @@ export default function Sidebar() {
             <div className="font-mono text-[9px] text-sky-400 mt-0.5">{t('municipal_operator')}</div>
           </div>
         </div>
-        <button onClick={()=>signOut({callbackUrl:'/login'})}
+        <button onClick={()=>signOut({callbackUrl:'/'})}
           className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-[13px] text-sky-400 transition-all hover:text-red-500 hover:bg-red-50/50">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
             <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>

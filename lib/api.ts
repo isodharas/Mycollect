@@ -38,3 +38,13 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 export async function getBinById(binId: string): Promise<Bin> {
   return apiFetch<Bin>(`bin/${binId}`)
 }
+
+
+export async function collectBin(binId: string): Promise<any> {
+  const res = await fetch('/api/collect', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bin_id: binId }),
+  })
+  return res.json()
+}
