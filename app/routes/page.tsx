@@ -37,6 +37,34 @@ export default function RoutesPage() {
   const [toast, setToast] = useState("")
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(()=>setToast(""),3500) }
+  const [showSchedule, setShowSchedule] = useState(false)
+  const [schedule, setSchedule] = useState<any>(null)
+  const [schedForm, setSchedForm] = useState({monday_date:"",monday_note:"",thursday_date:"",thursday_note:""})
+  const [schedSaving, setSchedSaving] = useState(false)
+
+  useEffect(() => {
+    fetch("https://g7oob1ovd6.execute-api.ap-southeast-2.amazonaws.com/prod/schedule")
+      .then(r => r.json()).then(d => {
+        if (d.success) {
+          setSchedule(d.schedule)
+          setSchedForm({monday_date:d.schedule.monday_date,monday_note:d.schedule.monday_note,thursday_date:d.schedule.thursday_date,thursday_note:d.schedule.thursday_note})
+        }
+      }).catch(()=>{})
+  }, [])
+
+  const saveSchedule = async () => {
+    setSchedSaving(true)
+    try {
+      const res = await fetch("https://g7oob1ovd6.execute-api.ap-southeast-2.amazonaws.com/prod/schedule", {
+        method: "PUT",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({...schedForm, monday_time:"8:00 AM - 10:00 AM", thursday_time:"8:00 AM - 10:00 AM", updated_by:"admin"})
+      })
+      const d = await res.json()
+      if (d.success) { showToast("Schedule updated successfully!"); setShowSchedule(false) }
+    } catch(e) { showToast("Failed to save schedule") }
+    finally { setSchedSaving(false) }
+  }
 
   // Fetch bins
   useEffect(() => {
@@ -158,6 +186,17 @@ export default function RoutesPage() {
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-extrabold text-[#0F2A3D] tracking-tight">{si?"මාර්ග":"Routes"}</h1>
+          <p className="font-mono text-[10px] text-[#5B8FA8] mt-1">{si?"ප්‍රමුඛතා රූට් කළමනාකරණය":"Priority route management · Homagama"}</p>
+        </div>
+        <button onClick={() => setShowSchedule(true)}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+          style={{background:"linear-gradient(135deg,#2D5A1B,#4A8C28)"}}>
+          📅 {si?"එකතු කිරීමේ කාලසටහන සංස්කරණය කරන්න":"Edit Collection Schedule"}
+        </button>
+      </div>
       <style>{`
         .leaflet-control-zoom{border:none!important;box-shadow:0 4px 16px rgba(0,0,0,0.12)!important;border-radius:10px!important;overflow:hidden!important}
         .leaflet-control-zoom a{border-radius:0!important}
@@ -328,6 +367,79 @@ export default function RoutesPage() {
           </div>
         </div>
       </div>
+
+      {/* Schedule Modal */}
+      {showSchedule && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{background:"rgba(0,0,0,0.7)", zIndex:9999}}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6" style={{position:"relative", zIndex:10000}}>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-lg font-bold text-[#0F2A3D]">Edit Collection Schedule</h2>
+                <p className="text-xs text-[#5B8FA8] mt-0.5">Homagama Municipal Area</p>
+              </div>
+              <button onClick={() => setShowSchedule(false)} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">✕</button>
+            </div>
+            <div className="space-y-4">
+              <div className="p-4 rounded-xl border border-gray-100 bg-gray-50">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white text-xs font-bold">M</div>
+                  <span className="font-bold text-[#0F2A3D]">Monday Collection</span>
+                </div>
+                <div className="space-y-2">
+                  <div>
+                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">Collection Date</label>
+                    <input type="date" value={schedForm.monday_date}
+                      onChange={e => setSchedForm(f => ({...f, monday_date:e.target.value}))}
+                      className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-green-500" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">Note (optional)</label>
+                    <input type="text" value={schedForm.monday_note} placeholder="e.g. Postponed due to public holiday"
+                      onChange={e => setSchedForm(f => ({...f, monday_note:e.target.value}))}
+                      className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-green-500" />
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 rounded-xl border border-gray-100 bg-gray-50">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white text-xs font-bold">T</div>
+                  <span className="font-bold text-[#0F2A3D]">Thursday Collection</span>
+                </div>
+                <div className="space-y-2">
+                  <div>
+                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">Collection Date</label>
+                    <input type="date" value={schedForm.thursday_date}
+                      onChange={e => setSchedForm(f => ({...f, thursday_date:e.target.value}))}
+                      className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-green-500" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">Note (optional)</label>
+                    <input type="text" value={schedForm.thursday_note} placeholder="e.g. Postponed due to vehicle maintenance"
+                      onChange={e => setSchedForm(f => ({...f, thursday_note:e.target.value}))}
+                      className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-green-500" />
+                  </div>
+                </div>
+              </div>
+              {schedule?.updated_at && (
+                <p className="text-xs text-[#5B8FA8] text-center">
+                  Last updated: {new Date(schedule.updated_at).toLocaleDateString("en-GB", {day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})} by {schedule.updated_by}
+                </p>
+              )}
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setShowSchedule(false)}
+                className="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50">
+                Cancel
+              </button>
+              <button onClick={saveSchedule} disabled={schedSaving}
+                className="flex-1 py-3 rounded-xl text-sm font-semibold text-white disabled:opacity-50"
+                style={{background:"linear-gradient(135deg,#2D5A1B,#4A8C28)"}}>
+                {schedSaving ? "Saving..." : "Save Schedule"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* How it works */}
       <div className="glass p-5">

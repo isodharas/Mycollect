@@ -193,6 +193,9 @@ export default function ReportsPage() {
         </div>
       </div>
 
+
+      {/* Citizen Reports */}
+      <CitizenReports />
       {/* Data preview */}
       <div className="glass p-5">
         <div className="font-bold text-[14px] text-[#0F2A3D] mb-1">{si ? 'දත්ත පෙරදසුන' : 'Data Preview'}</div>
@@ -227,6 +230,100 @@ export default function ReportsPage() {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+
+function CitizenReports() {
+  const [reports, setReports] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchReports()
+    const interval = setInterval(fetchReports, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const fetchReports = async () => {
+    try {
+      const res = await fetch('https://g7oob1ovd6.execute-api.ap-southeast-2.amazonaws.com/prod/report')
+      const data = await res.json()
+      setReports(data.reports || [])
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const markResolved = (reportId: string) => {
+    setReports(prev => prev.map((r: any) =>
+      r.report_id === reportId ? { ...r, status: 'resolved' } : r
+    ))
+  }
+
+  const pending = reports.filter((r: any) => r.status === 'pending').length
+
+  return (
+    <div className="glass-card p-5">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <div className="font-bold text-[14px] text-[#0F2A3D]">Citizen Reports</div>
+          <div className="font-mono text-[9.5px] text-[#5B8FA8]">Submitted via MyCollect mobile app</div>
+        </div>
+
+      </div>
+      {loading ? (
+        <div className="flex justify-center py-8">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+        </div>
+      ) : reports.length === 0 ? (
+        <div className="text-center py-8 text-[#5B8FA8] text-sm">No citizen reports yet</div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Citizen</th>
+                <th>Type</th>
+                <th>Bin</th>
+                <th>Description</th>
+                <th>Area</th>
+                <th>Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {reports.map((report: any) => (
+                <tr key={report.report_id}>
+                  <td>
+                    <div className="font-semibold text-xs text-[#0F2A3D]">{report.name}</div>
+                    <div className="text-[10px] text-[#5B8FA8]">{report.phone}</div>
+                  </td>
+                  <td>
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">
+                      {report.report_type}
+                    </span>
+                  </td>
+                  <td className="font-mono text-xs">{report.bin_id}</td>
+                  <td className="text-xs text-[#5B8FA8] max-w-[150px] truncate">{report.description}</td>
+                  <td className="text-xs text-[#5B8FA8]">{report.area || 'Homagama'}</td>
+                  <td className="text-[10px] text-[#5B8FA8]">
+                    {new Date(report.timestamp).toLocaleDateString("en-GB", {day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}
+                  </td>
+                  <td>
+                    <span className={"text-xs font-semibold px-2 py-0.5 rounded-full " + (report.status === "resolved" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700")}>
+                      {report.status}
+                    </span>
+                  </td>
+
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }
