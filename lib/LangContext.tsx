@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 
 export type Lang = 'en' | 'si'
 
@@ -51,8 +51,21 @@ const Ctx = createContext<{lang:Lang;setLang:(l:Lang)=>void;t:(k:string)=>string
 })
 
 export function LangProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>('en')
+  const [lang, setLangState] = useState<Lang>('en')
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('mycollect_lang') as Lang
+    if (saved === 'en' || saved === 'si') setLangState(saved)
+  }, [])
+
+  const setLang = (l: Lang) => {
+    setLangState(l)
+    localStorage.setItem('mycollect_lang', l)
+  }
+
   const t = (key: string) => T[lang][key] || T['en'][key] || key
+
   return <Ctx.Provider value={{lang, setLang, t}}>{children}</Ctx.Provider>
 }
 

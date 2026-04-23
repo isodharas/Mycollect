@@ -236,6 +236,8 @@ export default function ReportsPage() {
 
 
 function CitizenReports() {
+  const { lang } = useLang()
+  const si = lang === 'si'
   const [reports, setReports] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -269,8 +271,8 @@ function CitizenReports() {
     <div className="glass-card p-5">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <div className="font-bold text-[14px] text-[#0F2A3D]">Citizen Reports</div>
-          <div className="font-mono text-[9.5px] text-[#5B8FA8]">Submitted via MyCollect mobile app</div>
+          <div className="font-bold text-[14px] text-[#0F2A3D]">{si ? 'පුරවැසි වාර්තා' : 'Citizen Reports'}</div>
+          <div className="font-mono text-[9.5px] text-[#5B8FA8]">{si ? 'MyCollect යෙදුම හරහා ඉදිරිපත් කරන ලදී' : 'Submitted via MyCollect mobile app'}</div>
         </div>
 
       </div>
@@ -279,19 +281,19 @@ function CitizenReports() {
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
         </div>
       ) : reports.length === 0 ? (
-        <div className="text-center py-8 text-[#5B8FA8] text-sm">No citizen reports yet</div>
+        <div className="text-center py-8 text-[#5B8FA8] text-sm">{si ? 'තවම පුරවැසි වාර්තා නැත' : 'No citizen reports yet'}</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="data-table">
             <thead>
               <tr>
-                <th>Citizen</th>
-                <th>Type</th>
-                <th>Bin</th>
-                <th>Description</th>
-                <th>Area</th>
-                <th>Time</th>
-                <th>Status</th>
+                <th>{si ? 'පුරවැසියා' : 'Citizen'}</th>
+                <th>{si ? 'වර්ගය' : 'Type'}</th>
+                <th>{si ? 'කූඩුව' : 'Bin'}</th>
+                <th>{si ? 'විස්තරය' : 'Description'}</th>
+                <th>{si ? 'ප්‍රදේශය' : 'Area'}</th>
+                <th>{si ? 'වේලාව' : 'Time'}</th>
+                <th>{si ? 'තත්ත්වය' : 'Status'}</th>
               </tr>
             </thead>
             <tbody>
@@ -314,7 +316,7 @@ function CitizenReports() {
                   </td>
                   <td>
                     <span className={"text-xs font-semibold px-2 py-0.5 rounded-full " + (report.status === "resolved" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700")}>
-                      {report.status}
+                      {report.status === 'resolved' ? (si ? 'විසඳා ඇත' : 'resolved') : (si ? 'අපේක්ෂාවෙන්' : 'pending')}
                     </span>
                   </td>
 

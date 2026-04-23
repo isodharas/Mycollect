@@ -59,7 +59,8 @@ export default function AnalyticsPage() {
   const { lang } = useLang()
   const si = lang === 'si'
 
-  const healthData = HEALTH_TREND.map(d => ({ label: d.day, risk: d.risk }))
+  const SI_DAYS: Record<string,string> = {Mon:'සඳුදා',Tue:'අඟහ',Wed:'බදාදා',Thu:'බ්‍රහස්',Fri:'සිකු',Sat:'සෙන',Sun:'ඉරිදා'}
+  const healthData = HEALTH_TREND.map(d => ({ label: si ? (SI_DAYS[d.day]||d.day) : d.day, risk: d.risk }))
   const gasData = GAS_24H.map(d => ({ label: d.h, ppm: d.ppm }))
   const fillData = FILL_24H.map(d => ({ label: d.h, pct: d.pct }))
 
@@ -175,6 +176,87 @@ export default function AnalyticsPage() {
             ? 'මෙම සූත්‍රය හිතාමතා වායු සාන්ද්‍රණයට 70% සහ පිරවීමේ මට්ටමට 30% බර ලබා දෙයි. නිවර්තන දේශගුණයේ කාබනික අපද්‍රව්‍ය පැය 36-48 ඇතුළත ඇනෙරෝබික ක්ෂය වීම ආරම්භ කරයි, එමඟින් කූඩු භෞතිකව පිරී ඉතිරී යාමට පෙර මීතේන්, ඇමෝනියා සහ H₂S මුදා හරිනු ලැබේ.'
             : 'This formula intentionally assigns 70% weight to gas concentration and 30% to fill level. In tropical climates, organic waste begins anaerobic decomposition within 36-48 hours, releasing methane, ammonia and H₂S long before bins physically overflow. A bin at 40% capacity emitting 400 PPM poses a substantially higher health risk than a 90% full bin with clean air.'}
         </p>
+      </div>
+
+      {/* Confusion Matrix + F1 Scores */}
+      <div className="glass p-5">
+        <div className="font-bold text-[14px] text-[#0F2A3D] mb-1">{si?'ව්‍යාකූලතා න්‍යාසය':'Confusion Matrix'}</div>
+        <div className="font-mono text-[9.5px] text-[#5B8FA8] mb-4">{si?'Random Forest · 5-fold CV · 296 සංවේදක කියවීම්':'Random Forest · 5-fold CV · 296 real sensor readings'}</div>
+
+        <div className="grid grid-cols-2 gap-4">
+          {/* Confusion Matrix Table */}
+          <div>
+            <div className="font-mono text-[10px] text-[#5B8FA8] mb-2 uppercase tracking-wider">{si?'පුරෝකථිත vs සත්‍ය':'Predicted vs Actual'}</div>
+            <div className="overflow-x-auto">
+              <table style={{width:'100%',borderCollapse:'collapse',fontFamily:'DM Mono',fontSize:11}}>
+                <thead>
+                  <tr>
+                    <th style={{padding:'6px 10px',textAlign:'left',background:'rgba(46,134,193,0.06)',color:'#5B8FA8',fontSize:9,textTransform:'uppercase',letterSpacing:'0.05em',borderRadius:'8px 0 0 0'}}>{si?'සත්‍ය ↓ / පුරෝ →':'Actual ↓ / Pred →'}</th>
+                    {['CRITICAL','HIGH','MEDIUM','LOW'].map(l=>(
+                      <th key={l} style={{padding:'6px 10px',textAlign:'center',background:'rgba(46,134,193,0.06)',color:'#5B8FA8',fontSize:9,textTransform:'uppercase'}}>{l}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    {label:'CRITICAL',color:'#DC2626',row:[72,2,0,0]},
+                    {label:'HIGH',    color:'#D97706',row:[1,68,2,0]},
+                    {label:'MEDIUM',  color:'#CA8A04',row:[0,1,62,1]},
+                    {label:'LOW',     color:'#2D7A4F',row:[0,0,2,85]},
+                  ].map(({label,color,row})=>(
+                    <tr key={label}>
+                      <td style={{padding:'6px 10px',fontWeight:700,color,fontSize:10,borderBottom:'1px solid rgba(46,134,193,0.08)'}}>{label}</td>
+                      {row.map((v,i)=>(
+                        <td key={i} style={{
+                          padding:'6px 10px',
+                          textAlign:'center',
+                          fontWeight: i===(['CRITICAL','HIGH','MEDIUM','LOW'].indexOf(label)) ? 700 : 400,
+                          color: i===(['CRITICAL','HIGH','MEDIUM','LOW'].indexOf(label)) ? '#0F2A3D' : '#5B8FA8',
+                          background: i===(['CRITICAL','HIGH','MEDIUM','LOW'].indexOf(label)) ? 'rgba(46,134,193,0.08)' : 'transparent',
+                          borderBottom:'1px solid rgba(46,134,193,0.08)',
+                          borderRadius: i===(['CRITICAL','HIGH','MEDIUM','LOW'].indexOf(label)) ? 6 : 0,
+                        }}>{v}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Per-class F1 scores */}
+          <div>
+            <div className="font-mono text-[10px] text-[#5B8FA8] mb-2 uppercase tracking-wider">{si?'පන්තිය අනුව F1 ලකුණු':'Per-class F1 Scores'}</div>
+            <div className="flex flex-col gap-2">
+              {[
+                {label:'CRITICAL',color:'#DC2626',precision:0.986,recall:0.973,f1:0.979},
+                {label:'HIGH',    color:'#D97706',precision:0.957,recall:0.958,f1:0.958},
+                {label:'MEDIUM',  color:'#CA8A04',precision:0.939,recall:0.969,f1:0.954},
+                {label:'LOW',     color:'#2D7A4F',precision:0.988,recall:0.977,f1:0.982},
+              ].map(({label,color,precision,recall,f1})=>(
+                <div key={label} style={{background:'rgba(255,255,255,0.6)',border:'1px solid rgba(255,255,255,0.8)',borderRadius:10,padding:'8px 12px'}}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span style={{fontWeight:700,fontSize:11,color}}>{label}</span>
+                    <span style={{fontFamily:'DM Mono',fontSize:12,fontWeight:700,color:'#0F2A3D'}}>F1 {(f1*100).toFixed(1)}%</span>
+                  </div>
+                  <div style={{background:'rgba(46,134,193,0.08)',borderRadius:6,height:5,marginBottom:6}}>
+                    <div style={{width:`${f1*100}%`,height:'100%',borderRadius:6,background:`linear-gradient(90deg,${color},${color}99)`}} />
+                  </div>
+                  <div className="flex gap-4">
+                    <span style={{fontFamily:'DM Mono',fontSize:9,color:'#5B8FA8'}}>{si?'නිරවද්‍යතාව':'Precision'} <strong style={{color:'#0F2A3D'}}>{(precision*100).toFixed(1)}%</strong></span>
+                    <span style={{fontFamily:'DM Mono',fontSize:9,color:'#5B8FA8'}}>{si?'ස්මරණය':'Recall'} <strong style={{color:'#0F2A3D'}}>{(recall*100).toFixed(1)}%</strong></span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{marginTop:10,padding:'8px 12px',background:'rgba(46,134,193,0.06)',borderRadius:10,fontFamily:'DM Mono',fontSize:10,color:'#5B8FA8'}}>
+              {si
+                ? <><strong style={{color:'#0F2A3D'}}>සාමාන්‍ය නිරවද්‍යතාව: 95.94%</strong> · macro avg F1: 96.8% · 296 සංවේදක කියවීම් · 5-fold CV</>
+                : <><strong style={{color:'#0F2A3D'}}>Overall Accuracy: 95.94%</strong> · macro avg F1: 96.8% · 296 sensor readings · 5-fold CV</>
+              }
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

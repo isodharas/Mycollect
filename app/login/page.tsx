@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const { lang, setLang } = useLang()
+  const { lang } = useLang()
 
   const t = (en: string, si: string) => lang === 'si' ? si : en
 
@@ -28,14 +28,6 @@ export default function LoginPage() {
   return (
     <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'linear-gradient(135deg,#0F1F18 0%,#1A3328 50%,#0F1F18 100%)',fontFamily:'Plus Jakarta Sans,sans-serif',padding:'24px'}}>
       <div style={{width:'100%',maxWidth:440}}>
-
-        {/* Lang toggle */}
-        <div style={{display:'flex',justifyContent:'center',marginBottom:24}}>
-          <div style={{display:'flex',borderRadius:8,overflow:'hidden',border:'1px solid rgba(255,255,255,0.15)'}}>
-            <button onClick={()=>setLang('si')} style={{padding:'6px 16px',cursor:'pointer',border:'none',borderRight:'1px solid rgba(255,255,255,0.15)',background:lang==='si'?'rgba(255,255,255,0.2)':'transparent',color:'#fff',fontFamily:'Plus Jakarta Sans,sans-serif',fontSize:11.5,fontWeight:700,transition:'all .2s'}}>සිංහලෙන් බලන්න</button>
-            <button onClick={()=>setLang('en')} style={{padding:'6px 16px',cursor:'pointer',border:'none',background:lang==='en'?'rgba(255,255,255,0.2)':'transparent',color:'#fff',fontFamily:'Plus Jakarta Sans,sans-serif',fontSize:11.5,fontWeight:700,transition:'all .2s'}}>View in English</button>
-          </div>
-        </div>
 
         <div style={{textAlign:'center',marginBottom:36}}>
           <div style={{width:56,height:56,borderRadius:16,background:'#2D5A3D',margin:'0 auto 16px',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800,fontSize:18,color:'#fff'}}>MC</div>

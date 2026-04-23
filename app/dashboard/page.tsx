@@ -13,15 +13,15 @@ import BinTable from '@/components/BinTable'
 const Map = dynamic(() => import('@/components/HomagamaMap'), {
   ssr: false,
   loading: () => (
-    <div className="h-full flex items-center justify-center bg-sky-50/50">
-      <span className="font-mono text-[11px] text-sky-400 tracking-widest">Loading map...</span>
+    <div className="h-full flex items-center justify-center" style={{background:'rgba(237,245,232,0.5)'}}>
+      <span style={{fontFamily:'Poppins,sans-serif',fontSize:'12px',color:'#6B8C6B'}}>Loading map...</span>
     </div>
   )
 })
 
-const PC: Record<string,string> = {CRITICAL:'#DC2626',HIGH:'#D97706',MEDIUM:'#CA8A04',LOW:'#2D7A4F'}
-const PBG: Record<string,string> = {CRITICAL:'rgba(220,38,38,.06)',HIGH:'rgba(217,119,6,.06)',MEDIUM:'rgba(202,138,4,.06)',LOW:'rgba(45,122,79,.06)'}
-const PBD: Record<string,string> = {CRITICAL:'rgba(220,38,38,.18)',HIGH:'rgba(217,119,6,.18)',MEDIUM:'rgba(202,138,4,.18)',LOW:'rgba(45,122,79,.18)'}
+const PC: Record<string,string> = {CRITICAL:'#DC2626',HIGH:'#EA580C',MEDIUM:'#D97706',LOW:'#16A34A'}
+const PBG: Record<string,string> = {CRITICAL:'rgba(220,38,38,.05)',HIGH:'rgba(234,88,12,.05)',MEDIUM:'rgba(217,119,6,.05)',LOW:'rgba(22,163,74,.05)'}
+const PBD: Record<string,string> = {CRITICAL:'rgba(220,38,38,.15)',HIGH:'rgba(234,88,12,.15)',MEDIUM:'rgba(217,119,6,.15)',LOW:'rgba(22,163,74,.15)'}
 
 const SCHED = [
   {t:'09:00',bins:'BIN_001 + BIN_005',zone:'North Zone · Truck 4',zSi:'උතුරු කලාපය · ට්‍රක් 4',p:'CRITICAL' as const},
@@ -55,6 +55,8 @@ function normalizeStats(raw:any) {
   }
 }
 
+const poppins = {fontFamily:'Poppins,sans-serif'}
+
 export default function DashboardPage() {
   const router = useRouter()
   const { lang } = useLang()
@@ -62,7 +64,6 @@ export default function DashboardPage() {
   const [bins, setBins] = useState<Bin[]>(MOCK_BINS)
   const [stats, setStats] = useState(DEFAULT_STATS)
   const [loading, setLoading] = useState(true)
-  const [lastUpdate, setLastUpdate] = useState('')
 
   useEffect(()=>{
     async function fetchData() {
@@ -70,7 +71,6 @@ export default function DashboardPage() {
         const [b,s] = await Promise.all([getAllBins(), getDashboardStats()])
         if (b?.length) setBins(b)
         if (s) setStats(normalizeStats(s))
-        setLastUpdate(new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}))
       } catch { console.log('mock data') }
       finally { setLoading(false) }
     }
@@ -84,124 +84,204 @@ export default function DashboardPage() {
     .sort((a,b)=>b.health_risk-a.health_risk)
     .slice(0,6)
 
-  return (
-    <div className="flex flex-col gap-4">
+  const statCards = [
+    {
+      label: si?'මුළු කූඩු':'Total Bins',
+      value: stats.total_bins,
+      sub: si?'හෝමාගම කලාපය':'Homagama zone',
+      accent: '#4A8C28',
+      valColor: '#2D5A1B',
+    },
+    {
+      label: si?'අවදානම්':'Critical',
+      value: stats.by_priority.CRITICAL,
+      sub: si?'ක්ෂණික ක්‍රියාමාර්ගය':'Immediate action needed',
+      accent: '#DC2626',
+      valColor: '#DC2626',
+    },
+    {
+      label: si?'ඉහළ ප්‍රමුඛතා':'High Priority',
+      value: stats.by_priority.HIGH,
+      sub: si?'පැය 2 ඇතුළත':'Within 2 hours',
+      accent: '#EA580C',
+      valColor: '#EA580C',
+    },
+    {
+      label: si?'සාමාන්‍ය අවදානම':'Avg Health Risk',
+      value: `${stats.average_health_risk}`,
+      sub: si?'100 න්':'out of 100',
+      accent: '#4A8C28',
+      valColor: '#2D5A1B',
+    },
+  ]
 
-      {/* Status bar */}
-      <div className="glass-sm flex items-center justify-between px-4 py-2.5">
-        <div className="flex items-center gap-2.5">
-          <span className="w-2 h-2 rounded-full bg-green-400 anim-blink flex-shrink-0"/>
-          <span className="font-mono text-[11px] text-green-700 uppercase tracking-wider">
-            {si?'AWS සම්බන්ධිත':'AWS Connected'}
-          </span>
-          {lastUpdate && (
-            <span className="font-mono text-[11px] text-sky-400 ml-2">
-              {si?'යාවත්කාලීන ':'Updated '}{lastUpdate}
-            </span>
-          )}
-        </div>
-        <div className="flex gap-5">
-          {[['Lambda','ap-southeast-2'],[si?'ආකෘතිය':'Model','95.94% acc'],[si?'ප්‍රමාදය':'Latency','446ms']].map(([k,v])=>(
-            <div key={k} className="text-right">
-              <div className="font-mono text-[8px] text-sky-300 uppercase tracking-widest">{k}</div>
-              <div className="font-mono text-[10px] text-ink-400 font-medium">{v}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:'20px'}}>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-4 gap-3.5">
-        {[
-          {label:si?'මුළු කූඩු':'Total Bins', value:stats.total_bins, sub:si?'හෝමාගම කලාපය':'Homagama zone · all active', accent:'#4CAF72', glow:'rgba(76,175,114,0.12)', val:'#1A3328'},
-          {label:si?'අවදානම්':'Critical', value:stats.by_priority.CRITICAL, sub:si?'ක්ෂණික ක්‍රියාමාර්ගය':'Immediate action needed', accent:'#EF4444', glow:'rgba(220,38,38,0.1)', val:'#DC2626'},
-          {label:si?'ඉහළ ප්‍රමුඛතා':'High Priority', value:stats.by_priority.HIGH, sub:si?'පැය 2 ඇතුළත':'Collect within 2 hours', accent:'#F59E0B', glow:'rgba(217,119,6,0.1)', val:'#D97706'},
-          {label:si?'සාමාන්‍ය අවදානම':'Avg Health Risk', value:`${stats.average_health_risk}/100`, sub:si?'ඊයේට වඩා 8 අඩු':'Down 8 pts from yesterday', accent:'#22C55E', glow:'rgba(34,197,94,0.1)', val:'#166534'},
-        ].map(({label,value,sub,accent,glow,val})=>(
-          <div key={label} className="stat-card">
-            <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl" style={{background:`linear-gradient(90deg,${accent},${accent}66,transparent)`}}/>
-            <div className="absolute top-0 right-0 w-20 h-20 rounded-full pointer-events-none" style={{background:glow,filter:'blur(20px)',transform:'translate(30%,-30%)'}}/>
-            <div className="font-mono text-[9.5px] uppercase tracking-widest mb-3 flex items-center gap-2" style={{color:`${accent}aa`}}>
-              <span className="w-5 h-px inline-block" style={{background:`${accent}88`}}/>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'14px'}}>
+        {statCards.map(({label,value,sub,accent,valColor})=>(
+          <div key={label} style={{
+            background:'rgba(255,255,255,0.70)',
+            backdropFilter:'blur(20px)',
+            border:'1px solid rgba(255,255,255,0.80)',
+            borderRadius:'14px',
+            padding:'20px 22px',
+            position:'relative',
+            overflow:'hidden',
+            boxShadow:'0 4px 20px rgba(45,90,27,0.07)',
+          }}>
+            {/* Top accent line */}
+            <div style={{
+              position:'absolute',top:0,left:0,right:0,height:'3px',
+              borderRadius:'14px 14px 0 0',
+              background:`linear-gradient(90deg,${accent},${accent}44,transparent)`,
+            }}/>
+            <div style={{...poppins,fontSize:'11px',fontWeight:600,color:'#6B8C6B',marginBottom:'10px',textTransform:'uppercase',letterSpacing:'0.06em'}}>
               {label}
             </div>
-            <div className="font-sans text-[42px] font-extrabold leading-none tracking-tight mb-1.5" style={{color:val}}>{value}</div>
-            <div className="font-mono text-[10px]" style={{color:`${accent}99`}}>{sub}</div>
+            <div style={{...poppins,fontSize:'38px',fontWeight:800,color:valColor,lineHeight:1,marginBottom:'6px'}}>
+              {value}
+            </div>
+            <div style={{...poppins,fontSize:'11px',color:'#6B8C6B'}}>
+              {sub}
+            </div>
           </div>
         ))}
       </div>
 
       {/* Map + Feed */}
-      <div className="grid gap-0 rounded-2xl overflow-hidden" style={{gridTemplateColumns:'1fr 320px',height:480,border:'1px solid rgba(255,255,255,0.6)',boxShadow:'0 8px 40px rgba(15,42,61,0.08)'}}>
+      <div style={{
+        display:'grid',
+        gridTemplateColumns:'1fr 300px',
+        borderRadius:'16px',
+        overflow:'hidden',
+        height:'460px',
+        border:'1px solid rgba(255,255,255,0.72)',
+        boxShadow:'0 4px 24px rgba(45,90,27,0.08)',
+      }}>
         {/* Map */}
-        <div className="relative overflow-hidden">
+        <div style={{position:'relative',overflow:'hidden'}}>
           <Map />
-          <div className="absolute top-3.5 left-3.5 z-[1000] px-3.5 py-2 rounded-xl"
-            style={{background:'rgba(255,255,255,0.9)',backdropFilter:'blur(12px)',border:'1px solid rgba(255,255,255,0.8)',boxShadow:'0 4px 16px rgba(15,42,61,0.1)'}}>
-            <div className="font-semibold text-[13px] text-ink-400">{si?'හෝමාගම කලාපය':'Homagama Zone'}</div>
-            <div className="font-mono text-[9px] text-sky-400 mt-0.5">{bins.length} {si?'කූඩු · කදම්භය':'bins · tap a pin'}</div>
+          <div style={{
+            position:'absolute',top:'14px',left:'14px',zIndex:1000,
+            padding:'10px 14px',borderRadius:'10px',
+            background:'rgba(255,255,255,0.92)',
+            backdropFilter:'blur(12px)',
+            border:'1px solid rgba(255,255,255,0.85)',
+            boxShadow:'0 4px 16px rgba(45,90,27,0.10)',
+          }}>
+            <div style={{...poppins,fontWeight:600,fontSize:'13px',color:'#1A2E1A'}}>
+              {si?'හෝමාගම කලාපය':'Homagama Zone'}
+            </div>
+            <div style={{...poppins,fontSize:'11px',color:'#6B8C6B',marginTop:'2px'}}>
+              {bins.length} {si?'කූඩු':'bins'}
+            </div>
           </div>
         </div>
 
-        {/* Feed */}
-        <div className="flex flex-col overflow-hidden" style={{background:'rgba(255,255,255,0.55)',backdropFilter:'blur(16px)',borderLeft:'1px solid rgba(255,255,255,0.5)'}}>
-          {/* Critical/High counts */}
-          <div className="grid grid-cols-2 flex-shrink-0" style={{borderBottom:'1px solid rgba(46,134,193,0.1)'}}>
-            <button onClick={()=>router.push('/bins?filter=CRITICAL')}
-              className="p-4 text-left transition-all hover:brightness-95"
-              style={{background:'rgba(254,242,242,0.85)',borderRight:'1px solid rgba(46,134,193,0.08)'}}>
-              <div className="font-mono text-[8px] text-red-300 uppercase tracking-widest mb-1">{si?'අවදානම්':'Critical'}</div>
-              <div className="font-extrabold text-[34px] leading-none text-red-600 tracking-tight">{stats.by_priority.CRITICAL}</div>
-              <div className="font-mono text-[8px] text-red-300 mt-1">{si?'පෙරහන් කිරීමට':'tap to filter'}</div>
+        {/* Right feed panel */}
+        <div style={{
+          display:'flex',flexDirection:'column',overflow:'hidden',
+          background:'rgba(255,255,255,0.65)',
+          backdropFilter:'blur(16px)',
+          borderLeft:'1px solid rgba(255,255,255,0.60)',
+        }}>
+          {/* Critical / High quick counts */}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',flexShrink:0,borderBottom:'1px solid rgba(74,140,40,0.08)'}}>
+            <button
+              onClick={()=>router.push('/bins?filter=CRITICAL')}
+              style={{
+                padding:'16px',textAlign:'left',cursor:'pointer',
+                background:'rgba(254,242,242,0.80)',
+                borderRight:'1px solid rgba(74,140,40,0.06)',
+                border:'none',transition:'all 0.15s',
+              }}
+            >
+              <div style={{...poppins,fontSize:'10px',fontWeight:600,color:'#DC2626',textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:'4px'}}>
+                {si?'අවදානම්':'Critical'}
+              </div>
+              <div style={{...poppins,fontSize:'32px',fontWeight:800,color:'#DC2626',lineHeight:1}}>
+                {stats.by_priority.CRITICAL}
+              </div>
             </button>
-            <button onClick={()=>router.push('/bins?filter=HIGH')}
-              className="p-4 text-left transition-all hover:brightness-95"
-              style={{background:'rgba(255,251,235,0.85)'}}>
-              <div className="font-mono text-[8px] text-amber-300 uppercase tracking-widest mb-1">{si?'ඉහළ':'High'}</div>
-              <div className="font-extrabold text-[34px] leading-none text-amber-600 tracking-tight">{stats.by_priority.HIGH}</div>
-              <div className="font-mono text-[8px] text-amber-300 mt-1">{si?'පෙරහන් කිරීමට':'tap to filter'}</div>
+            <button
+              onClick={()=>router.push('/bins?filter=HIGH')}
+              style={{
+                padding:'16px',textAlign:'left',cursor:'pointer',
+                background:'rgba(255,247,237,0.80)',
+                border:'none',transition:'all 0.15s',
+              }}
+            >
+              <div style={{...poppins,fontSize:'10px',fontWeight:600,color:'#EA580C',textTransform:'uppercase',letterSpacing:'0.06em',marginBottom:'4px'}}>
+                {si?'ඉහළ':'High'}
+              </div>
+              <div style={{...poppins,fontSize:'32px',fontWeight:800,color:'#EA580C',lineHeight:1}}>
+                {stats.by_priority.HIGH}
+              </div>
             </button>
           </div>
 
-          {/* Alerts header */}
-          <div className="px-3.5 pt-2.5 pb-1.5 flex-shrink-0" style={{borderBottom:'1px solid rgba(46,134,193,0.06)'}}>
-            <div className="font-bold text-[13px] text-ink-400">{si?'සජීව අනතුරු':'Live Alerts'}</div>
-            <div className="font-mono text-[9px] text-sky-400 mt-0.5">{si?'සෞඛ්‍ය අවදානම අනුව':'Sorted by health risk'}</div>
+          {/* Live Alerts */}
+          <div style={{padding:'12px 14px 8px',flexShrink:0,borderBottom:'1px solid rgba(74,140,40,0.06)'}}>
+            <div style={{...poppins,fontWeight:700,fontSize:'13px',color:'#1A2E1A'}}>
+              {si?'සජීව අනතුරු':'Live Alerts'}
+            </div>
           </div>
 
-          {/* Alert list */}
-          <div className="flex-1 overflow-y-auto p-2 scrollbar-thin">
+          <div style={{flex:1,overflowY:'auto',padding:'8px'}}>
             {alerts.map(a=>(
-              <button key={a.bin_id} onClick={()=>router.push('/bins')}
-                className="w-full text-left px-2.5 py-2 rounded-xl mb-1.5 transition-all hover:translate-x-0.5"
-                style={{background:PBG[a.priority_label],border:`1px solid ${PBD[a.priority_label]}`,borderLeft:`3px solid ${PC[a.priority_label]}`}}>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-mono text-[11px] font-medium text-ink-400">{a.bin_id}</span>
+              <button
+                key={a.bin_id}
+                onClick={()=>router.push('/bins')}
+                style={{
+                  width:'100%',textAlign:'left',
+                  padding:'10px 12px',borderRadius:'10px',marginBottom:'6px',
+                  background:PBG[a.priority_label],
+                  border:`1px solid ${PBD[a.priority_label]}`,
+                  borderLeft:`3px solid ${PC[a.priority_label]}`,
+                  cursor:'pointer',transition:'all 0.15s',
+                }}
+              >
+                <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'4px'}}>
+                  <span style={{...poppins,fontSize:'12px',fontWeight:600,color:'#1A2E1A'}}>{a.bin_id}</span>
                   <PriorityBadge priority={a.priority_label} size="sm"/>
-                  {(a as any).is_real && <span className="font-mono text-[8px] font-bold px-1.5 py-0.5 rounded text-green-700" style={{background:'rgba(34,197,94,0.12)',border:'1px solid rgba(34,197,94,0.25)'}}>LIVE</span>}
-                  <span className="font-mono text-[9px] text-sky-400 ml-auto">{si?'සජීව':'live'}</span>
                 </div>
-                <div className="font-mono text-[9px] text-sky-400">{a.gas_ppm} PPM · {a.fill_level}% {si?'පිරවීම':'fill'}</div>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <div className="flex-1 h-1 rounded-full overflow-hidden" style={{background:'rgba(0,0,0,0.06)'}}>
-                    <div className="h-full rounded-full" style={{width:`${Math.min(a.health_risk,100)}%`,background:PC[a.priority_label]}}/>
+                <div style={{...poppins,fontSize:'11px',color:'#6B8C6B'}}>
+                  {a.gas_ppm} PPM · {a.fill_level}% {si?'පිරවීම':'fill'}
+                </div>
+                <div style={{display:'flex',alignItems:'center',gap:'6px',marginTop:'6px'}}>
+                  <div style={{flex:1,height:'4px',borderRadius:'2px',background:'rgba(0,0,0,0.06)'}}>
+                    <div style={{height:'100%',borderRadius:'2px',width:`${Math.min(a.health_risk,100)}%`,background:PC[a.priority_label]}}/>
                   </div>
-                  <span className="font-mono text-[8px]" style={{color:PC[a.priority_label]}}>{si?'අවදානම':'Risk'} {a.health_risk}</span>
+                  <span style={{...poppins,fontSize:'10px',fontWeight:600,color:PC[a.priority_label]}}>
+                    {si?'අවදානම':'Risk'} {a.health_risk}
+                  </span>
                 </div>
               </button>
             ))}
           </div>
 
-          {/* Schedule */}
-          <div className="p-2.5 flex-shrink-0" style={{borderTop:'1px solid rgba(46,134,193,0.1)',background:'rgba(255,255,255,0.3)'}}>
-            <div className="font-bold text-[12px] text-ink-400 mb-2">{si?'අද කාලසටහන':"Today's Schedule"}</div>
+          {/* Today's Schedule */}
+          <div style={{
+            padding:'10px',flexShrink:0,
+            borderTop:'1px solid rgba(74,140,40,0.08)',
+            background:'rgba(255,255,255,0.35)',
+          }}>
+            <div style={{...poppins,fontWeight:700,fontSize:'12px',color:'#1A2E1A',marginBottom:'8px'}}>
+              {si?'අද කාලසටහන':"Today's Schedule"}
+            </div>
             {SCHED.map(s=>(
-              <div key={s.t} className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg mb-1 transition-all hover:bg-white/50"
-                style={{background:'rgba(255,255,255,0.55)',border:'1px solid rgba(46,134,193,0.08)'}}>
-                <span className="font-mono text-[10px] font-medium text-green-600 w-10 flex-shrink-0">{s.t}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[11px] font-semibold text-ink-400 truncate">{s.bins}</div>
-                  <div className="font-mono text-[8px] text-sky-400 mt-0.5">{si?s.zSi:s.zone}</div>
+              <div key={s.t} style={{
+                display:'flex',alignItems:'center',gap:'8px',
+                padding:'8px 10px',borderRadius:'8px',marginBottom:'4px',
+                background:'rgba(255,255,255,0.60)',
+                border:'1px solid rgba(74,140,40,0.08)',
+              }}>
+                <span style={{...poppins,fontSize:'11px',fontWeight:600,color:'#4A8C28',width:'36px',flexShrink:0}}>{s.t}</span>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{...poppins,fontSize:'11px',fontWeight:600,color:'#1A2E1A',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{s.bins}</div>
+                  <div style={{...poppins,fontSize:'10px',color:'#6B8C6B',marginTop:'1px'}}>{si?s.zSi:s.zone}</div>
                 </div>
                 <PriorityBadge priority={s.p} size="sm"/>
               </div>
@@ -213,23 +293,40 @@ export default function DashboardPage() {
       {/* Charts */}
       <DashboardCharts />
 
-      {/* Table */}
-      <div className="glass p-5">
-        <div className="flex items-center justify-between mb-4">
+      {/* Bins Table */}
+      <div style={{
+        background:'rgba(255,255,255,0.70)',
+        backdropFilter:'blur(20px)',
+        border:'1px solid rgba(255,255,255,0.80)',
+        borderRadius:'14px',
+        padding:'20px 22px',
+        boxShadow:'0 4px 20px rgba(45,90,27,0.07)',
+      }}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'16px'}}>
           <div>
-            <div className="font-bold text-[14px] text-ink-400">{si?'සියලු කූඩු — සජීව':'All Bins — Live Status'}</div>
-            <div className="font-mono text-[9.5px] text-sky-400 mt-0.5">
-              {loading?'Fetching from AWS...':`${bins.length} ${si?'කූඩු · සෑම 15s':'bins · auto-refresh 15s'}`}
+            <div style={{...poppins,fontWeight:700,fontSize:'14px',color:'#1A2E1A'}}>
+              {si?'සියලු කූඩු':'All Bins'}
+            </div>
+            <div style={{...poppins,fontSize:'11px',color:'#6B8C6B',marginTop:'2px'}}>
+              {loading ? (si?'AWS වෙතින් ලබාගනිමින්...':'Fetching from AWS...') : `${bins.length} ${si?'කූඩු':'bins'}`}
             </div>
           </div>
-          <div className="flex gap-2">
-            <button onClick={()=>router.push('/bins')}
-              className="font-mono text-[10px] text-green-600 px-3.5 py-1.5 rounded-lg transition-all hover:bg-green-50"
-              style={{background:'rgba(45,122,79,0.08)',border:'1px solid rgba(45,122,79,0.2)'}}>
+          <div style={{display:'flex',gap:'8px'}}>
+            <button
+              onClick={()=>router.push('/bins')}
+              style={{
+                ...poppins,fontSize:'12px',fontWeight:500,
+                color:'#4A8C28',padding:'7px 16px',borderRadius:'8px',cursor:'pointer',
+                background:'rgba(74,140,40,0.08)',border:'1px solid rgba(74,140,40,0.18)',
+              }}
+            >
               {si?'සියල්ල':'View All'}
             </button>
-            <button className="font-mono text-[10px] text-sky-400 px-3.5 py-1.5 rounded-lg transition-all hover:bg-sky-50"
-              style={{background:'rgba(46,134,193,0.06)',border:'1px solid rgba(46,134,193,0.15)'}}>
+            <button style={{
+              ...poppins,fontSize:'12px',fontWeight:500,
+              color:'#6B8C6B',padding:'7px 16px',borderRadius:'8px',cursor:'pointer',
+              background:'rgba(107,140,107,0.08)',border:'1px solid rgba(107,140,107,0.18)',
+            }}>
               {si?'CSV':'Export CSV'}
             </button>
           </div>

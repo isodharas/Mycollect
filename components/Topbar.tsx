@@ -3,7 +3,6 @@ import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { useLang } from '@/lib/LangContext'
-import SinhalaToggle from './SinhalaToggle'
 
 const PAGES: Record<string,[string,string,string,string]> = {
   '/dashboard': ['overview',  'Overview',  'live_monitoring','Live monitoring · Homagama Zone'],
@@ -44,7 +43,6 @@ export default function Topbar() {
             {time} IST
           </div>
         )}
-        <SinhalaToggle />
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
           style={{background:'rgba(34,197,94,0.1)',border:'1px solid rgba(34,197,94,0.25)'}}>
           <span className="w-1.5 h-1.5 rounded-full bg-green-400 anim-blink"/>
