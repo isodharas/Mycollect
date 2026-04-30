@@ -30,7 +30,7 @@ const SCHED = [
 ]
 
 const DEFAULT_STATS = {
-  total_bins:12, by_priority:{LOW:2,MEDIUM:3,HIGH:4,CRITICAL:3},
+  total_bins:6, by_priority:{LOW:1,MEDIUM:0,HIGH:1,CRITICAL:4},
   average_health_risk:34.2, average_fill_level:69.5,
   needs_immediate_attention:3, needs_attention_soon:4,
   critical_bins:[] as any[], high_priority_bins:[] as any[],
@@ -38,6 +38,7 @@ const DEFAULT_STATS = {
 
 function normalizeStats(raw:any) {
   if (!raw) return DEFAULT_STATS
+  if (raw.stats) raw = raw.stats
   return {
     total_bins: raw.total_bins??raw.totalBins??12,
     by_priority: {

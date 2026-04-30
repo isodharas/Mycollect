@@ -10,7 +10,7 @@ import { useLang } from "@/lib/LangContext"
 
 type Filter = Priority | "ALL"
 const PC: Record<string,string> = {CRITICAL:"#DC2626",HIGH:"#D97706",MEDIUM:"#CA8A04",LOW:"#2D7A4F"}
-const REAL_BINS = ["BIN_001"]
+const REAL_BINS = ["BIN_005"]
 
 export default function BinsPage() {
   const searchParams = useSearchParams()
