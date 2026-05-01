@@ -6,7 +6,7 @@ export type Lang = 'en' | 'si'
 const T: Record<Lang, Record<string,string>> = {
   en: {
     overview:'Overview', live_bins:'Live Bins', routes:'Routes',
-    analytics:'Analytics', alerts:'Alerts', reports:'Reports',
+    analytics:'Analytics', alerts:'Alerts', reports:'Reports', admin:'Admin', account:'Account',
     sign_out:'Sign out', system_live:'System Live',
     waste_intelligence:'Waste Intelligence', municipal_operator:'Municipal Operator',
     total_bins:'Total Bins', critical:'Critical', high_priority:'High Priority',
@@ -26,7 +26,7 @@ const T: Record<Lang, Record<string,string>> = {
   },
   si: {
     overview:'දළ විශ්ලේෂණය', live_bins:'සජීව කූඩු', routes:'මාර්ග',
-    analytics:'විශ්ලේෂණය', alerts:'අනතුරු ඇඟවීම්', reports:'වාර්තා',
+    analytics:'විශ්ලේෂණය', alerts:'අනතුරු ඇඟවීම්', reports:'වාර්තා', admin:'පරිපාලක', account:'ගිණුම',
     sign_out:'ඉවත් වන්න', system_live:'පද්ධතිය සක්‍රිය',
     waste_intelligence:'අපද්‍රව්‍ය බුද්ධිය', municipal_operator:'නාගරික ක්‍රියාකරු',
     total_bins:'මුළු කූඩු', critical:'අවදානම්', high_priority:'ඉහළ ප්‍රමුඛතා',

@@ -79,9 +79,9 @@ export default function AnalyticsPage() {
       {/* ML Model Stats */}
       <div className="grid grid-cols-5 gap-3">
         {[
-          { label: si?'ML නිරවද්‍යතාව':'ML Accuracy', value: '95.94%', sub: si?'5-fold සත්‍යාපනය':'5-fold CV', color: '#22C55E' },
+          { label: si?'ML නිරවද්‍යතාව':'ML Accuracy', value: '95.80%', sub: si?'5-fold සත්‍යාපනය':'5-fold CV', color: '#22C55E' },
           { label: si?'ආකෘතිය':'Model', value: 'Random Forest', sub: si?'ගස් 100':'100 trees', color: '#2E86C1' },
-          { label: si?'API ප්‍රමාදය':'API Latency', value: '446ms', sub: si?'ඉලක්කයට 11× වේගවත්':'11× target', color: '#4CAF72' },
+          { label: si?'API ප්‍රමාදය':'API Latency', value: '1.12s', sub: si?'5s ඉලක්කයට ඇතුළත':'within 5s target', color: '#4CAF72' },
           { label: si?'සංවේදක කියවීම්':'Sensor Readings', value: '478', sub: si?'DynamoDB වාර්තා':'DynamoDB records', color: '#D97706' },
           { label: si?'ඉන්ධන ඉතිරිය':'Fuel Savings', value: '17%', sub: si?'ස්ථාවර මාර්ගයට එදිරිව':'vs fixed route', color: '#DC2626' },
         ].map(s => (
@@ -150,8 +150,8 @@ export default function AnalyticsPage() {
               {l:si?'උපරිම ගැඹුර':'Max Depth',v:'10'},
               {l:si?'අංශු':'Features',v:'fill_level, gas_ppm, temperature, humidity, weighted_score'},
               {l:si?'බර':'Weights',v:'Gas 70% · Fill 30%'},
-              {l:si?'පුහුණු ප්‍රමාණය':'Training Size',v:'296 real sensor readings'},
-              {l:si?'හරස් සත්‍යාපනය':'Cross Validation',v:'5-fold · 95.94% avg'},
+              {l:si?'පුහුණු ප්‍රමාණය':'Training Size',v:'616 readings (296 real + 320 simulated)'},
+              {l:si?'හරස් සත්‍යාපනය':'Cross Validation',v:'5-fold · 95.80% avg'},
               {l:si?'සේවාදායකය':'Deployed On',v:'AWS Lambda · ap-southeast-2'},
             ].map(r => (
               <div key={r.l} className="flex items-start gap-3">
@@ -181,7 +181,7 @@ export default function AnalyticsPage() {
       {/* Confusion Matrix + F1 Scores */}
       <div className="glass p-5">
         <div className="font-bold text-[14px] text-[#0F2A3D] mb-1">{si?'ව්‍යාකූලතා න්‍යාසය':'Confusion Matrix'}</div>
-        <div className="font-mono text-[9.5px] text-[#5B8FA8] mb-4">{si?'Random Forest · 5-fold CV · 296 සංවේදක කියවීම්':'Random Forest · 5-fold CV · 296 real sensor readings'}</div>
+        <div className="font-mono text-[9.5px] text-[#5B8FA8] mb-4">{si?'Random Forest · 5-fold CV · 616 කියවීම්':'Random Forest · 5-fold CV · 616 readings'}</div>
 
         <div className="grid grid-cols-2 gap-4">
           {/* Confusion Matrix Table */}
@@ -251,8 +251,8 @@ export default function AnalyticsPage() {
             </div>
             <div style={{marginTop:10,padding:'8px 12px',background:'rgba(46,134,193,0.06)',borderRadius:10,fontFamily:'DM Mono',fontSize:10,color:'#5B8FA8'}}>
               {si
-                ? <><strong style={{color:'#0F2A3D'}}>සාමාන්‍ය නිරවද්‍යතාව: 95.94%</strong> · macro avg F1: 96.8% · 296 සංවේදක කියවීම් · 5-fold CV</>
-                : <><strong style={{color:'#0F2A3D'}}>Overall Accuracy: 95.94%</strong> · macro avg F1: 96.8% · 296 sensor readings · 5-fold CV</>
+                ? <><strong style={{color:'#0F2A3D'}}>සාමාන්‍ය නිරවද්‍යතාව: 95.80%</strong> · macro avg F1: 96.8% · 616 සංවේදක කියවීම් · 5-fold CV</>
+                : <><strong style={{color:'#0F2A3D'}}>Overall Accuracy: 95.80%</strong> · macro avg F1: 96.8% · 616 sensor readings · 5-fold CV</>
               }
             </div>
           </div>

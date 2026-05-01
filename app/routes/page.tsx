@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { useLang } from "@/lib/LangContext"
 import { getAllBins, collectBin } from "@/lib/api"
-import { MOCK_BINS, BIN_LOCATIONS } from "@/lib/data"
+import { MOCK_BINS, BIN_LOCATIONS, BIN_LOCATIONS_SI } from "@/lib/data"
 import type { Bin, Priority } from "@/lib/types"
 import PriorityBadge from "@/components/PriorityBadge"
 
@@ -10,7 +10,7 @@ const PC: Record<string,string> = {CRITICAL:"#DC2626",HIGH:"#D97706",MEDIUM:"#CA
 
 const BIN_COORDS: Record<string,[number,number]> = {
   BIN_001:[6.8459,80.0004], BIN_002:[6.8478,80.0038], BIN_003:[6.8502,80.0015],
-  BIN_004:[6.8418,80.0052], BIN_005:[6.8441,80.0021], BIN_006:[6.8432,79.9971],
+  BIN_004:[6.8418,80.0052], BIN_005:[6.8217,80.0434], BIN_006:[6.8432,79.9971],
   BIN_007:[6.8488,79.9959], BIN_008:[6.8455,80.0068], BIN_009:[6.8467,79.9988],
   BIN_010:[6.8422,80.0088], BIN_011:[6.8511,80.0042], BIN_012:[6.8398,79.9995],
 }
@@ -140,7 +140,7 @@ export default function RoutesPage() {
       m.bindPopup(
         '<div style="font-family:Plus Jakarta Sans;padding:4px;min-width:170px">'+
         '<div style="font-weight:800;font-size:14px;margin-bottom:2px">Stop '+(idx+1)+' \u2014 '+bin.bin_id+'</div>'+
-        '<div style="font-family:DM Mono;font-size:10px;color:#5B8FA8;margin-bottom:8px">'+(BIN_LOCATIONS[bin.bin_id]||"Homagama")+'</div>'+
+        '<div style="font-family:DM Mono;font-size:10px;color:#5B8FA8;margin-bottom:8px">'+(si ? (BIN_LOCATIONS_SI[bin.bin_id]||"හෝමාගම") : (BIN_LOCATIONS[bin.bin_id]||"Homagama"))+'</div>'+
         (bin.collected
           ? '<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:8px;text-align:center;color:#166534;font-weight:700;font-size:12px">\u2713 COLLECTED'+(bin.collectTime?' at '+bin.collectTime:'')+'</div>'
           : '<div style="display:flex;gap:10px"><div><span style="font-family:DM Mono;font-size:8px;color:#5B8FA8">GAS</span><br/><b style="font-size:16px;color:'+col+'">'+bin.gas_ppm+'</b> <span style="font-size:9px;color:#5B8FA8">ppm</span></div><div><span style="font-family:DM Mono;font-size:8px;color:#5B8FA8">FILL</span><br/><b style="font-size:16px;color:'+col+'">'+bin.fill_level+'%</b></div><div><span style="font-family:DM Mono;font-size:8px;color:#5B8FA8">RISK</span><br/><b style="font-size:16px;color:'+col+'">'+bin.health_risk+'</b></div></div>'
@@ -194,7 +194,7 @@ export default function RoutesPage() {
         <button onClick={() => setShowSchedule(true)}
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
           style={{background:"linear-gradient(135deg,#2D5A1B,#4A8C28)"}}>
-          📅 {si?"එකතු කිරීමේ කාලසටහන සංස්කරණය කරන්න":"Edit Collection Schedule"}
+          📅 {si?"එකතු කිරීමේ කාලසටහන සංස්කරණය":"Edit Collection Schedule"}
         </button>
       </div>
       <style>{`
@@ -330,7 +330,7 @@ export default function RoutesPage() {
                       {(bin as any).is_real && <span className="font-mono text-[7px] font-bold px-1.5 py-0.5 rounded text-white" style={{background:"linear-gradient(135deg,#22C55E,#166534)"}}>LIVE</span>}
                       {bin.collected && <span className="font-mono text-[9px] text-[#22C55E] font-medium">{si?"එකතු කළා":"COLLECTED"}{bin.collectTime?" "+bin.collectTime:""}</span>}
                     </div>
-                    <div className="font-mono text-[9px] text-[#5B8FA8] truncate">{BIN_LOCATIONS[bin.bin_id]||"Homagama"}</div>
+                    <div className="font-mono text-[9px] text-[#5B8FA8] truncate">{si ? (BIN_LOCATIONS_SI[bin.bin_id]||"හෝමාගම") : (BIN_LOCATIONS[bin.bin_id]||"Homagama")}</div>
                     {!bin.collected && (
                       <div className="flex items-center gap-3 mt-1">
                         <span className="font-mono text-[9px]" style={{color:col}}>{bin.gas_ppm} PPM</span>
@@ -374,8 +374,8 @@ export default function RoutesPage() {
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6" style={{position:"relative", zIndex:10000}}>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-lg font-bold text-[#0F2A3D]">Edit Collection Schedule</h2>
-                <p className="text-xs text-[#5B8FA8] mt-0.5">Homagama Municipal Area</p>
+                <h2 className="text-lg font-bold text-[#0F2A3D]">{si?"එකතු කිරීමේ කාලසටහන සංස්කරණය":"Edit Collection Schedule"}</h2>
+                <p className="text-xs text-[#5B8FA8] mt-0.5">{si?"හෝමාගම නාගරික කලාපය":"Homagama Municipal Area"}</p>
               </div>
               <button onClick={() => setShowSchedule(false)} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">✕</button>
             </div>
@@ -383,17 +383,17 @@ export default function RoutesPage() {
               <div className="p-4 rounded-xl border border-gray-100 bg-gray-50">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center text-white text-xs font-bold">M</div>
-                  <span className="font-bold text-[#0F2A3D]">Monday Collection</span>
+                  <span className="font-bold text-[#0F2A3D]">{si?"සඳුදා එකතු කිරීම":"Monday Collection"}</span>
                 </div>
                 <div className="space-y-2">
                   <div>
-                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">Collection Date</label>
+                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">{si?"එකතු කිරීමේ දිනය":"Collection Date"}</label>
                     <input type="date" value={schedForm.monday_date}
                       onChange={e => setSchedForm(f => ({...f, monday_date:e.target.value}))}
                       className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-green-500" />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">Note (optional)</label>
+                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">{si?"සටහන (විකල්ප)":"Note (optional)"}</label>
                     <input type="text" value={schedForm.monday_note} placeholder="e.g. Postponed due to public holiday"
                       onChange={e => setSchedForm(f => ({...f, monday_note:e.target.value}))}
                       className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-green-500" />
@@ -403,17 +403,17 @@ export default function RoutesPage() {
               <div className="p-4 rounded-xl border border-gray-100 bg-gray-50">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white text-xs font-bold">T</div>
-                  <span className="font-bold text-[#0F2A3D]">Thursday Collection</span>
+                  <span className="font-bold text-[#0F2A3D]">{si?"බ්‍රහස්පතින්දා එකතු කිරීම":"Thursday Collection"}</span>
                 </div>
                 <div className="space-y-2">
                   <div>
-                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">Collection Date</label>
+                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">{si?"එකතු කිරීමේ දිනය":"Collection Date"}</label>
                     <input type="date" value={schedForm.thursday_date}
                       onChange={e => setSchedForm(f => ({...f, thursday_date:e.target.value}))}
                       className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-green-500" />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">Note (optional)</label>
+                    <label className="text-xs font-semibold text-[#5B8FA8] uppercase tracking-wide">{si?"සටහන (විකල්ප)":"Note (optional)"}</label>
                     <input type="text" value={schedForm.thursday_note} placeholder="e.g. Postponed due to vehicle maintenance"
                       onChange={e => setSchedForm(f => ({...f, thursday_note:e.target.value}))}
                       className="w-full mt-1 px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-green-500" />
@@ -422,19 +422,19 @@ export default function RoutesPage() {
               </div>
               {schedule?.updated_at && (
                 <p className="text-xs text-[#5B8FA8] text-center">
-                  Last updated: {new Date(schedule.updated_at).toLocaleDateString("en-GB", {day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})} by {schedule.updated_by}
+                  {si?"අවසන් වරට යාවත්කාලීන කළේ: ":"Last updated: "}{new Date(schedule.updated_at).toLocaleDateString("en-GB", {day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})} {si?"විසින්":"by"} {schedule.updated_by}
                 </p>
               )}
             </div>
             <div className="flex gap-3 mt-6">
               <button onClick={() => setShowSchedule(false)}
                 className="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50">
-                Cancel
+                {si?"අවලංගු":"Cancel"}
               </button>
               <button onClick={saveSchedule} disabled={schedSaving}
                 className="flex-1 py-3 rounded-xl text-sm font-semibold text-white disabled:opacity-50"
                 style={{background:"linear-gradient(135deg,#2D5A1B,#4A8C28)"}}>
-                {schedSaving ? "Saving..." : "Save Schedule"}
+                {schedSaving ? (si?"සුරකිමින්...":"Saving...") : (si?"කාලසටහන සුරකින්න":"Save Schedule")}
               </button>
             </div>
           </div>
