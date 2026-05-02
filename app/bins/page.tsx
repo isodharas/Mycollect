@@ -1,5 +1,5 @@
 "use client"
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { getAllBins } from "@/lib/api"
 import { MOCK_BINS, BIN_LOCATIONS, BIN_LOCATIONS_SI } from "@/lib/data"
@@ -12,7 +12,7 @@ type Filter = Priority | "ALL"
 const PC: Record<string, string> = { CRITICAL: "#DC2626", HIGH: "#D97706", MEDIUM: "#CA8A04", LOW: "#2D7A4F" }
 const REAL_BINS = ["BIN_005"]
 
-export default function BinsPage() {
+function BinsPageInner() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const { lang } = useLang()
@@ -490,4 +490,8 @@ function CollectionHistory() {
       )}
     </div>
   )
+}
+
+export default function BinsPage() {
+  return <Suspense fallback={<div>Loading...</div>}><BinsPageInner /></Suspense>
 }
