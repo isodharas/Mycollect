@@ -323,7 +323,7 @@ export default function BinsPage() {
             <div className="flex flex-col gap-3.5">
               <div>
                 <div className="inp-label">{si ? "ස්ථානය" : "Location"}</div>
-                <input className="inp-field" value={editForm.location || BIN_LOCATIONS[editing.bin_id] || ""} onChange={e => setEditForm(f => ({ ...f, location: e.target.value }))} />
+                <input className="inp-field" value={( editForm as any).location || BIN_LOCATIONS[editing.bin_id] || ""} onChange={e => setEditForm(f => ({ ...f, location: e.target.value }))} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div><div className="inp-label">{si ? "වායු PPM" : "Gas PPM"}</div><input className="inp-field" type="number" value={editForm.gas_ppm || ""} onChange={e => setEditForm(f => ({ ...f, gas_ppm: Number(e.target.value) }))} /></div>
