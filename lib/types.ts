@@ -9,6 +9,7 @@ export interface Bin {
   health_risk: number
   priority: number
   priority_label: Priority
+  location?: string
   last_updated: string
   timestamp: string
   classified_by: string
