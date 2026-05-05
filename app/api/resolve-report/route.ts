@@ -5,8 +5,8 @@ import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb'
 const db = DynamoDBDocumentClient.from(new DynamoDBClient({
   region: 'ap-southeast-2',
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.MYCOLLECT_AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.MYCOLLECT_AWS_SECRET_ACCESS_KEY!,
   }
 }))
 
