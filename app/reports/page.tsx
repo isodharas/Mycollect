@@ -160,7 +160,7 @@ export default function ReportsPage() {
         <div className="font-mono text-[9.5px] text-[#5B8FA8] mb-4">{si ? 'සජීව දත්ත · AWS DynamoDB' : 'Live data · AWS DynamoDB'}</div>
         <div className="grid grid-cols-3 gap-3 mb-4">
           {[
-            { l: si ? 'අවදානම් කූඩු' : 'Critical Bins', v: critical, c: '#DC2626' },
+            { l: si ? 'අවදානම් බදුන්' : 'Critical Bins', v: critical, c: '#DC2626' },
             { l: si ? 'ඉහළ ප්‍රමුඛතා' : 'High Priority', c: '#D97706', v: high },
             { l: si ? 'සාමාන්‍ය අවදානම' : 'Avg Health Risk', v: avgRisk + '/100', c: '#2E86C1' },
             { l: si ? 'සාමාන්‍ය වායු' : 'Avg Gas PPM', v: avgGas + ' PPM', c: '#4A8C28' },
@@ -175,7 +175,7 @@ export default function ReportsPage() {
         </div>
         {critical > 0 && (
           <div className="px-4 py-3 rounded-xl text-[12px] font-semibold" style={{ background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.2)', color: '#DC2626' }}>
-            ⚠ {critical} {si ? 'කූඩු ක්ෂණික එකතු කිරීමක් අවශ්‍යයි' : 'bin(s) require immediate collection'}
+            ⚠ {critical} {si ? 'බදුන් ක්ෂණික එකතු කිරීමක් අවශ්‍යයි' : 'bin(s) require immediate collection'}
           </div>
         )}
       </div>
@@ -186,12 +186,12 @@ export default function ReportsPage() {
           <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style={{ background: 'rgba(46,134,193,0.1)', border: '1px solid rgba(46,134,193,0.2)' }}>
             <span className="font-mono text-[16px] font-bold text-[#2E86C1]">CSV</span>
           </div>
-          <div className="font-bold text-[16px] text-[#0F2A3D] mb-2">{si ? 'කූඩු දත්ත CSV' : 'Bin Data CSV'}</div>
+          <div className="font-bold text-[16px] text-[#0F2A3D] mb-2">{si ? 'බදුන් දත්ත CSV' : 'Bin Data CSV'}</div>
           <p className="text-[12.5px] text-[#5B8FA8] leading-relaxed mb-4">
-            {si ? 'සියලු කූඩු සංවේදක කියවීම්, ප්‍රමුඛතා සහ සෞඛ්‍ය අවදානම් ලකුණු CSV ආකෘතියෙන් අපනයනය කරන්න.' : 'Export all bin sensor readings, priority classifications and health risk scores. Compatible with Excel and Google Sheets.'}
+            {si ? 'සියලු බදුන් සංවේදක කියවීම්, ප්‍රමුඛතා සහ සෞඛ්‍ය අවදානම් ලකුණු CSV ආකෘතියෙන් අපනයනය කරන්න.' : 'Export all bin sensor readings, priority classifications and health risk scores. Compatible with Excel and Google Sheets.'}
           </p>
           <div className="flex gap-2 mb-4">
-            <span className="font-mono text-[10px] text-[#5B8FA8] px-2.5 py-1 rounded-lg" style={{ background: 'rgba(46,134,193,0.06)' }}>{bins.length} {si ? 'කූඩු' : 'bins'}</span>
+            <span className="font-mono text-[10px] text-[#5B8FA8] px-2.5 py-1 rounded-lg" style={{ background: 'rgba(46,134,193,0.06)' }}>{bins.length} {si ? 'බදුන්' : 'bins'}</span>
             <span className="font-mono text-[10px] text-[#5B8FA8] px-2.5 py-1 rounded-lg" style={{ background: 'rgba(46,134,193,0.06)' }}>10 {si ? 'තීරු' : 'columns'}</span>
           </div>
           <button onClick={exportCSV} disabled={exporting}
@@ -207,7 +207,7 @@ export default function ReportsPage() {
           </div>
           <div className="font-bold text-[16px] text-[#0F2A3D] mb-2">{si ? 'නාගරික සෞඛ්‍ය අවදානම් වාර්තාව' : 'Municipal Health Risk Report'}</div>
           <p className="text-[12.5px] text-[#5B8FA8] leading-relaxed mb-4">
-            {si ? 'නාගරික සභාවට ඉදිරිපත් කිරීමට සූදානම් සෞඛ්‍ය අවදානම් වාර්තාවක් සාදන්න. ML ආකෘති විස්තර, ප්‍රමුඛතා සංඛ්‍යාලේඛන සහ සියලු කූඩු දත්ත ඇතුළත්.' : 'Generate a print-ready report for municipal council submission. Includes ML model details, priority statistics, executive summary and complete bin data.'}
+            {si ? 'නාගරික සභාවට ඉදිරිපත් කිරීමට සූදානම් සෞඛ්‍ය අවදානම් වාර්තාවක් සාදන්න. ML ආකෘති විස්තර, ප්‍රමුඛතා සංඛ්‍යාලේඛන සහ සියලු බදුන් දත්ත ඇතුළත්.' : 'Generate a print-ready report for municipal council submission. Includes ML model details, priority statistics, executive summary and complete bin data.'}
           </p>
           <div className="flex gap-2 mb-4">
             <span className="font-mono text-[10px] text-[#5B8FA8] px-2.5 py-1 rounded-lg" style={{ background: 'rgba(46,134,193,0.06)' }}>{si ? 'මුද්‍රණයට සූදානම්' : 'Print-ready'}</span>
@@ -232,7 +232,7 @@ export default function ReportsPage() {
           <table className="data-table">
             <thead>
               <tr>
-                {(si ? ['කූඩු', 'ස්ථානය', 'ප්‍රමුඛතාව', 'පිරවීම', 'වායු', 'අවදානම', 'උෂ්ණත්වය'] : ['Bin', 'Location', 'Priority', 'Fill', 'Gas', 'Risk', 'Temp']).map(h => (
+                {(si ? ['බදුන්', 'ස්ථානය', 'ප්‍රමුඛතාව', 'පිරවීම', 'වායු', 'අවදානම', 'උෂ්ණත්වය'] : ['Bin', 'Location', 'Priority', 'Fill', 'Gas', 'Risk', 'Temp']).map(h => (
                   <th key={h}>{h}</th>
                 ))}
               </tr>
@@ -254,7 +254,7 @@ export default function ReportsPage() {
         </div>
         {bins.length > 5 && (
           <div className="font-mono text-[10px] text-[#5B8FA8] mt-3 text-center">
-            + {bins.length - 5} {si ? 'තවත් කූඩු (අපනයනයේ ඇතුළත්)' : 'more bins (included in export)'}
+            + {bins.length - 5} {si ? 'තවත් බදුන් (අපනයනයේ ඇතුළත්)' : 'more bins (included in export)'}
           </div>
         )}
       </div>
@@ -346,7 +346,7 @@ function CitizenReports() {
                 <tr>
                   <th>{si ? 'පුරවැසියා' : 'Citizen'}</th>
                   <th>{si ? 'වර්ගය' : 'Type'}</th>
-                  <th>{si ? 'කූඩුව' : 'Bin'}</th>
+                  <th>{si ? 'බදුන්ව' : 'Bin'}</th>
                   <th>{si ? 'විස්තරය' : 'Description'}</th>
                   <th>{si ? 'ප්‍රදේශය' : 'Area'}</th>
                   <th>{si ? 'වේලාව' : 'Time'}</th>

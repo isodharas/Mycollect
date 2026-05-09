@@ -85,3 +85,23 @@ body{background:#F0F7F3}
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+.btn-signin {
+  padding: 9px 20px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  background: #2D7A4F;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-family: Plus Jakarta Sans, sans-serif;
+  transition: all 0.18s;
+  box-shadow: 0 2px 12px rgba(45,122,79,0.3);
+}
+.btn-signin:hover {
+  background: #4CAF72;
+  transform: translateY(-1px);
+}

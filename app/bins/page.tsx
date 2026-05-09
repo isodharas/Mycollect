@@ -84,7 +84,7 @@ function BinsPageInner() {
   }
 
   function createNewBin() {
-    if (!newBin.bin_id || !newBin.location) { showToast(si ? "කූඩු ID සහ ස්ථානය අවශ්‍යයි" : "Bin ID and Location required", "error"); return }
+    if (!newBin.bin_id || !newBin.location) { showToast(si ? "බදුන් ID සහ ස්ථානය අවශ්‍යයි" : "Bin ID and Location required", "error"); return }
     const gasScore = (newBin.gas_ppm / 1000) * 100
     const healthRisk = Math.round(Math.min((gasScore * 0.70) + (newBin.fill_level * 0.30), 100) * 10) / 10
     const pl = healthRisk >= 50 ? "CRITICAL" : healthRisk >= 30 ? "HIGH" : healthRisk >= 15 ? "MEDIUM" : "LOW"
@@ -114,15 +114,15 @@ function BinsPageInner() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-extrabold text-[#0F2A3D] tracking-tight">{si ? "සජීව කූඩු" : "Live Bins"}</h1>
+          <h1 className="text-xl font-extrabold text-[#0F2A3D] tracking-tight">{si ? "සජීව බදුන්" : "Live Bins"}</h1>
           <p className="font-mono text-[10px] text-[#5B8FA8] mt-1">
-            {loading ? "Fetching from AWS..." : bins.length + (si ? " කූඩු · හෝමාගම නාගරික කලාපය" : " bins · Homagama Municipal Zone")}
+            {loading ? "Fetching from AWS..." : bins.length + (si ? " බදුන් · හෝමාගම නාගරික කලාපය" : " bins · Homagama Municipal Zone")}
           </p>
         </div>
         <button onClick={() => setCreating(true)}
           className="px-5 py-2.5 rounded-xl font-semibold text-[13px] text-white transition-all hover:-translate-y-0.5"
           style={{ background: "linear-gradient(135deg,#2D7A4F,#1A3328)", boxShadow: "0 4px 16px rgba(45,122,79,0.35)" }}>
-          {si ? "නව කූඩුවක් එකතු කරන්න" : "Add New Bin"}
+          {si ? "නව බදුන්වක් එකතු කරන්න" : "Add New Bin"}
         </button>
       </div>
 
@@ -130,7 +130,7 @@ function BinsPageInner() {
       <div className="glass-card flex items-center gap-3 flex-wrap px-4 py-3">
         <div className="flex-1 min-w-[200px] flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl" style={{ background: "rgba(255,255,255,0.6)", border: "1px solid rgba(46,134,193,0.15)" }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5B8FA8" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder={si ? "කූඩු හෝ ස්ථාන සොයන්න..." : "Search bins or locations..."}
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder={si ? "බදුන් හෝ ස්ථාන සොයන්න..." : "Search bins or locations..."}
             className="bg-transparent border-none outline-none flex-1 text-[13px] text-[#0F2A3D]" style={{ fontFamily: "Plus Jakarta Sans,sans-serif" }} />
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -151,7 +151,7 @@ function BinsPageInner() {
 
       {/* Bin grid */}
       {filtered.length === 0 ? (
-        <div className="text-center py-16 font-mono text-[13px] text-[#5B8FA8]">{si ? "කූඩු හමු නොවීය" : "No bins match your search"}</div>
+        <div className="text-center py-16 font-mono text-[13px] text-[#5B8FA8]">{si ? "බදුන් හමු නොවීය" : "No bins match your search"}</div>
       ) : (
         <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))" }}>
           {filtered.map((b, i) => {
@@ -365,7 +365,7 @@ function BinsPageInner() {
               </div>
               <div className="text-[17px] font-bold text-[#0F2A3D] mb-2">{si ? "මකන්නද" : "Delete"} {deleting.bin_id}?</div>
               <p className="text-[13px] text-[#5B8FA8] leading-relaxed">
-                {si ? "මෙය නිරීක්ෂණ පද්ධතියෙන් කූඩුව ඉවත් කරයි. මෙම ක්‍රියාව අහෝසි කළ නොහැක." : "This will remove the bin from the monitoring system. This action cannot be undone."}
+                {si ? "මෙය නිරීක්ෂණ පද්ධතියෙන් බදුන්ව ඉවත් කරයි. මෙම ක්‍රියාව අහෝසි කළ නොහැක." : "This will remove the bin from the monitoring system. This action cannot be undone."}
               </p>
             </div>
             <div className="flex gap-2.5">
@@ -388,13 +388,13 @@ function BinsPageInner() {
         <div className="overlay" onClick={() => setCreating(false)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
-              <div className="text-[17px] font-bold text-[#0F2A3D]">{si ? "නව කූඩුවක් එකතු කරන්න" : "Add New Bin"}</div>
+              <div className="text-[17px] font-bold text-[#0F2A3D]">{si ? "නව බදුන්වක් එකතු කරන්න" : "Add New Bin"}</div>
               <button onClick={() => setCreating(false)} className="w-8 h-8 rounded-lg flex items-center justify-center text-[#5B8FA8]"
                 style={{ background: "rgba(46,134,193,0.06)", border: "1px solid rgba(46,134,193,0.12)" }}>x</button>
             </div>
             <div className="flex flex-col gap-3.5">
               <div>
-                <div className="inp-label">{si ? "කූඩු ID" : "Bin ID"}</div>
+                <div className="inp-label">{si ? "බදුන් ID" : "Bin ID"}</div>
                 <input className="inp-field" placeholder="BIN_013" value={newBin.bin_id} onChange={e => setNewBin(f => ({ ...f, bin_id: e.target.value }))} />
               </div>
               <div>
@@ -418,7 +418,7 @@ function BinsPageInner() {
               <button onClick={createNewBin}
                 className="flex-1 py-2.5 rounded-xl font-semibold text-[13px] text-white"
                 style={{ background: "linear-gradient(135deg,#2D7A4F,#1A3328)", boxShadow: "0 4px 16px rgba(45,122,79,0.3)" }}>
-                {si ? "කූඩුව සාදන්න" : "Create Bin"}
+                {si ? "බදුන්ව සාදන්න" : "Create Bin"}
               </button>
               <button onClick={() => setCreating(false)} className="px-5 py-2.5 rounded-xl font-semibold text-[13px] text-[#5B8FA8]"
                 style={{ background: "rgba(46,134,193,0.06)", border: "1px solid rgba(46,134,193,0.15)" }}>
@@ -463,7 +463,7 @@ function CollectionHistory() {
           <table className="data-table">
             <thead>
               <tr>
-                <th>{si ? 'කූඩු' : 'Bin'}</th>
+                <th>{si ? 'බදුන්' : 'Bin'}</th>
                 <th>{si ? 'ස්ථානය' : 'Location'}</th>
                 <th>{si ? 'එකතු කළ වේලාව' : 'Collected At'}</th>
                 <th>{si ? 'ප්‍රමුඛතාව' : 'Priority'}</th>

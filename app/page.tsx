@@ -34,8 +34,7 @@ export default function LandingPage() {
       {/* NAV */}
       <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
         <div className="nav-logo">
-          <div className="nav-mark">MC</div>
-          <span className="nav-name">MyCollect</span>
+          <span style={{fontWeight:800,fontSize:18,letterSpacing:"-0.02em"}}><span style={{color:"#1A3328"}}>My</span><span style={{color:"#4A8C28"}}>Collect</span></span>
         </div>
         <div className="nav-links">
           <a href="#how">{si ? 'ක්‍රියා කරන ආකාරය' : 'How It Works'}</a>
@@ -58,13 +57,13 @@ export default function LandingPage() {
               {si ? 'පද්ධතිය සජීව · හෝමාගම, ශ්‍රී ලංකාව' : 'System Live · Homagama, Sri Lanka'}
             </div>
             <h1 className="hero-h1 au d1">
-              {si ? 'සෞඛ්‍ය-ප්‍රථම' : 'Health-First'}<br />
-              <span className="green">{si ? 'අපද්‍රව්‍ය' : 'Waste'}</span><br />
-              <span className="light">{si ? 'බුද්ධිය.' : 'Intelligence.'}</span>
+              {si ? 'සෞඛිය-පූර්ව' : 'Health-First'}<br />
+              <span className="green">{si ? 'අපද්‍රව්‍ය පිලිබඳ' : 'Waste'}</span><br />
+              <span className="light">{si ? 'කෘත්‍රිම බුද්ධිය.' : 'Intelligence.'}</span>
             </h1>
             <p className="hero-sub au d2">
               {si
-                ? 'කූඩුව පිරෙන්නට පෙර. රෝගය පැතිරෙන්නට පෙර — MyCollect සැබෑ කාලයේදී විෂ වාතය හඳුනාගෙන සෞඛ්‍ය අවදානම අනුව එකතු කිරීම් සැලසුම් කරයි.'
+                ? 'බදුන පිරෙන්නට පෙර. රෝගය පැතිරෙන්නට පෙර — MyCollect සැබෑ කාලයේදී විෂ වාතය හඳුනාගෙන සෞඛ්‍ය අවදානම අනුව එකතු කිරීම් සැලසුම් කරයි.'
                 : 'Before the bin overflows. Before the illness spreads — MyCollect detects toxic gases in real time and routes collection by health risk, not schedule.'}
             </p>
 
@@ -171,7 +170,7 @@ export default function LandingPage() {
         <div className="how-grid">
           {[
             { n: '01', t: si ? 'සංවේදකය හඳුනාගනී' : 'Sensor detects', b: si ? 'MQ-135 සෑම මිනිත්තු 15කට වරක් මීතේන්, ඇමෝනියා සහ H₂S කියවයි.' : 'MQ-135 reads methane, ammonia and H₂S every 15 minutes. HC-SR04 measures fill level.' },
-            { n: '02', t: si ? 'වලාකුළ ලබාගනී' : 'Cloud receives', b: si ? 'NodeMCU TLS-සංකේතාත්මක JSON MQTT හරහා AWS IoT Core වෙත යවයි.' : 'NodeMCU transmits TLS-encrypted JSON via MQTT to AWS IoT Core. 24-hour local buffer during outages.' },
+            { n: '02', t: si ? ' දත්ත සංචිතය ලබාගනී' : 'Cloud receives', b: si ? 'NodeMCU TLS-සංකේතාත්මක JSON HTTP හරහා AWS IoT Core වෙත යවයි.' : 'NodeMCU transmits TLS-encrypted JSON via HTTP to AWS IoT Core. 24-hour local buffer during outages.' },
             { n: '03', t: si ? 'ML වර්ගීකරණය' : 'ML classifies', b: si ? 'Lambda CRITICAL / HIGH / MEDIUM / LOW පවරයි.' : 'Lambda runs Random Forest on 5 features. Assigns CRITICAL / HIGH / MEDIUM / LOW with health risk 0–100.' },
             { n: '04', t: si ? 'ක්‍රියාමාර්ගය' : 'Action taken', b: si ? 'උපකරණ පුවරුව සජීවීව යාවත්කාලීන වේ.' : 'Dashboard updates live. CRITICAL bins trigger alerts. Routes reprioritise by health risk, not calendar.' },
           ].map(h => (
@@ -198,15 +197,15 @@ export default function LandingPage() {
             <div className="fc dk reveal" style={{ gridColumn: 'span 7' }}>
               <span className="fc-tag">{si ? 'සෞඛ්‍ය-ප්‍රථම සැලසුම' : 'Health-First Design'}</span>
               <div className="fc-t">{si ? 'වායු 70%, පිරවීම 30%' : 'Gas weighted 70%, Fill 30%'}</div>
-              <div className="fc-b">{si ? '40% ක් පිරී 400 PPM විමෝචනය කරන කූඩුවක් CRITICAL ලෙස ශ්‍රේණිගත වේ.' : 'A bin at 40% emitting 400 PPM ranks CRITICAL. The gas is the threat, not the fill level.'}</div>
+              <div className="fc-b">{si ? '40% ක් පිරී 400 PPM විමෝචනය කරන බදුන්වක් CRITICAL ලෙස ශ්‍රේණිගත වේ.' : 'A bin at 40% emitting 400 PPM ranks CRITICAL. The gas is the threat, not the fill level.'}</div>
             </div>
             <div className="fc reveal" style={{ gridColumn: 'span 4' }}>
               <span className="fc-tag">{si ? 'IoT දෘඩාංග' : 'IoT Hardware'}</span>
               <div className="fc-t">NodeMCU + MQ-135</div>
-              <div className="fc-b">{si ? 'මීතේන්, ඇමෝනියා සහ H₂S හඳුනාගැනීම 50–1000 PPM.' : 'Methane, ammonia and H₂S detection 50–1000 PPM. TLS-encrypted MQTT.'}</div>
+              <div className="fc-b">{si ? 'මීතේන්, ඇමෝනියා සහ H₂S හඳුනාගැනීම 50–1000 PPM.' : 'Methane, ammonia and H₂S detection 50–1000 PPM. TLS-encrypted HTTP.'}</div>
             </div>
             <div className="fc reveal" style={{ gridColumn: 'span 4' }}>
-              <span className="fc-tag">{si ? 'වලාකුළ සේවාදායකය' : 'Cloud Backend'}</span>
+              <span className="fc-tag">{si ? 'දත්ත සංචිත සේවාදායකය' : 'Cloud Backend'}</span>
               <div className="fc-t">{si ? 'Lambda මත Serverless' : 'Serverless on Lambda'}</div>
               <div className="fc-b">{si ? 'ProcessBinData + GetBinData. DynamoDB ද්විත්ව වගුව. 446ms.' : 'ProcessBinData + GetBinData. DynamoDB dual-table. 446ms response time.'}</div>
             </div>
@@ -226,7 +225,7 @@ export default function LandingPage() {
           <div className="sec-label reveal" style={{ justifyContent: 'center', color: 'rgba(184,212,232,.45)' }}>{si ? 'මෙය අවශ්‍ය කළ මොහොත' : 'The moment that made this necessary'}</div>
           <p className="reveal" style={{ fontSize: 'clamp(22px,3.2vw,38px)', fontWeight: 700, lineHeight: 1.52, color: '#F0F7F3', marginBottom: 28, marginTop: 12 }}>
             {si
-              ? <>"2017 අප්‍රේල් 14 වන දින, කොළඹ මීතොටමුල්ල — <span style={{ color: '#B8D4E8' }}>පුද්ගලයින් 32 දෙනෙකු</span> ජීවිතක්ෂය කළේය. කිසිදු අනතුරු ඇඟවීමක් නොතිබිණි."</>
+              ? <>"2017 අප්‍රේල් 14 වන දින, කොළඹ මීතොටමුල්ල — <span style={{ color: '#B8D4E8' }}>පුද්ගලයින් 32 දෙනෙකු</span> ජීවිතක්ෂයට පත් කළේය. කිසිදු අනතුරු ඇඟවීමක් නොතිබිණි."</>
               : <>"On 14 April 2017, the Meethotamulla garbage mountain collapsed — killing <span style={{ color: '#B8D4E8' }}>32 people</span> and destroying <span style={{ color: '#B8D4E8' }}>145 homes.</span> No system existed to detect it."</>
             }
           </p>
@@ -234,8 +233,8 @@ export default function LandingPage() {
             {si ? 'MyCollect ඒ යටිතල පහසුකම් — ශ්‍රී ලංකාවේ, ශ්‍රී ලංකාව සඳහා ගොඩනගන ලදී.' : 'MyCollect is that infrastructure — built in Sri Lanka, for Sri Lanka.'}
           </p>
           <div className="reveal" style={{ display: 'flex', justifyContent: 'center', gap: 14 }}>
-            <Link href="/signup" className="btn-dark">{si ? 'උපකරණ පුවරුව' : 'Open Dashboard'}</Link>
-            <Link href="/signup" style={{ padding: '14px 30px', borderRadius: 10, background: 'transparent', border: '1px solid rgba(184,212,232,.3)', color: 'rgba(184,212,232,.75)', fontSize: 14, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', fontFamily: 'Poppins,sans-serif' }}>{si ? 'පිවිසෙන්න' : 'Sign In'}</Link>
+            <Link href="/login" className="btn-dark">{si ? 'උපකරණ පුවරුව' : 'Open Dashboard'}</Link>
+            <Link href="/login" style={{ padding: '14px 30px', borderRadius: 10, background: 'transparent', border: '1px solid rgba(184,212,232,.3)', color: 'rgba(184,212,232,.75)', fontSize: 14, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 8, textDecoration: 'none', fontFamily: 'Poppins,sans-serif' }}>{si ? 'පිවිසෙන්න' : 'Sign In'}</Link>
           </div>
         </div>
       </section>
@@ -243,8 +242,8 @@ export default function LandingPage() {
       {/* FOOTER */}
       <footer className="l-footer">
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 9, background: '#1A3328', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 12 }}>MC</div>
-          <span style={{ fontWeight: 800, fontSize: 16, color: '#0F1F18', letterSpacing: '-.01em' }}>MyCollect</span>
+          
+          <span style={{fontWeight:800,fontSize:16,letterSpacing:"-.02em"}}><span style={{color:"#1A3328"}}>My</span><span style={{color:"#4A8C28"}}>Collect</span></span>
         </div>
         <div style={{ fontFamily: 'Poppins,sans-serif', fontSize: 10, letterSpacing: '.06em', color: '#9CA3AF' }}>
           {si ? 'දිනිතිඋ විජේසිංහ · NSBM · BSc (Hons) මෘදුකාංග ඉංජිනේරු' : 'DINITHI WIJESINGHE · NSBM GREEN UNIVERSITY · BSc HONS SOFTWARE ENGINEERING · 2025–2026'}

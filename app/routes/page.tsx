@@ -261,7 +261,7 @@ export default function RoutesPage() {
           <div className="absolute top-3.5 left-3.5 z-[1000] px-3.5 py-2 rounded-xl"
             style={{background:"rgba(255,255,255,0.92)",backdropFilter:"blur(12px)",border:"1px solid rgba(255,255,255,0.8)",boxShadow:"0 4px 16px rgba(15,42,61,0.1)"}}>
             <div className="font-bold text-[13px] text-[#0F2A3D]">{si?"සජීව මාර්ග සිතියම":"Live Route Map"}</div>
-            <div className="font-mono text-[9px] text-[#5B8FA8] mt-0.5">{si?"ඩිපෝව → අවදානම් කූඩු → ඩිපෝව":"Depot \u2192 CRITICAL/HIGH bins \u2192 Depot"}</div>
+            <div className="font-mono text-[9px] text-[#5B8FA8] mt-0.5">{si?"ඩිපෝව → අවදානම් බදුන් → ඩිපෝව":"Depot \u2192 CRITICAL/HIGH bins \u2192 Depot"}</div>
           </div>
           <div className="absolute bottom-3.5 left-3.5 z-[1000] px-3 py-2 rounded-xl flex items-center gap-4"
             style={{background:"rgba(255,255,255,0.92)",backdropFilter:"blur(12px)",border:"1px solid rgba(255,255,255,0.8)"}}>
@@ -446,9 +446,9 @@ export default function RoutesPage() {
         <div className="font-bold text-[14px] text-[#0F2A3D] mb-3">{si?"ක්\u200dරියා කරන ආකාරය":"How Collection Works"}</div>
         <div className="grid grid-cols-4 gap-3">
           {[
-            {n:"1", t:si?"ML වර්ගීකරණය":"ML Classifies", d:si?"Random Forest සෑම මිනිත්තු 15කට කූඩු වර්ගීකරණය කරයි. CRITICAL + HIGH මාර්ගයට එකතු වේ.":"Random Forest classifies bins every 15 min. CRITICAL + HIGH bins are added to today's route.",c:"#2E86C1"},
+            {n:"1", t:si?"ML වර්ගීකරණය":"ML Classifies", d:si?"Random Forest සෑම මිනිත්තු 15කට බදුන් වර්ගීකරණය කරයි. CRITICAL + HIGH මාර්ගයට එකතු වේ.":"Random Forest classifies bins every 15 min. CRITICAL + HIGH bins are added to today's route.",c:"#2E86C1"},
             {n:"2", t:si?"මාර්ගය යවන්න":"Dispatch Route", d:si?"කළමනාකරු මාර්ගය ට්\u200dරක් රථයට පවරයි. රියදුරු ජංගම යෙදුම හරහා මාර්ගය ලබා ගනී.":"Manager dispatches route to truck. Driver receives route via mobile app.",c:"#D97706"},
-            {n:"3", t:si?"කූඩුව හිස් කරන්න":"Empty Bin", d:si?"ට්\u200dරක් රථය පැමිණ කූඩුව හිස් කරයි. සංවේදකය වායු=0, පිරවීම=0 කියවයි.":"Truck arrives and empties the bin. Sensor reads gas=0, fill=0 after emptying.",c:"#22C55E"},
+            {n:"3", t:si?"බදුන්ව හිස් කරන්න":"Empty Bin", d:si?"ට්\u200dරක් රථය පැමිණ බදුන්ව හිස් කරයි. සංවේදකය වායු=0, පිරවීම=0 කියවයි.":"Truck arrives and empties the bin. Sensor reads gas=0, fill=0 after emptying.",c:"#22C55E"},
             {n:"4", t:si?"ස්වයංක්\u200dරීය යාවත්කාලීන":"Auto Update", d:si?"Lambda නැවත වර්ගීකරණය LOW ලෙස කරයි. උපකරණ පුවරුව එකතු කළ ලෙස පෙන්වයි. මාර්ගය යාවත්කාලීන වේ.":"Lambda reclassifies as LOW. Dashboard shows collected. Route updates automatically.",c:"#DC2626"},
           ].map(s=>(
             <div key={s.n} className="glass-card p-4">

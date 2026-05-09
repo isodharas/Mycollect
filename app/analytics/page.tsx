@@ -98,7 +98,7 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-2 gap-3.5">
         <div className="glass-card p-5">
           <div className="font-bold text-[14px] text-[#0F2A3D] mb-1">{si?'සෞඛ්‍ය අවදානම් ප්‍රවණතාව':'Health Risk Trend'}</div>
-          <div className="font-mono text-[9.5px] text-[#5B8FA8] mb-4">{si?'දින 7 පෙරළෙන සාමාන්‍යය · සියලු කූඩු':'7-day rolling average · all bins'}</div>
+          <div className="font-mono text-[9.5px] text-[#5B8FA8] mb-4">{si?'දින 7 පෙරළෙන සාමාන්‍යය · සියලු බදුන්':'7-day rolling average · all bins'}</div>
           <div style={{height:220}}>
             <AreaC data={healthData} dataKey="risk" color="#2E86C1" />
           </div>
@@ -173,7 +173,7 @@ export default function AnalyticsPage() {
         </div>
         <p className="text-[12.5px] text-[#2E5266] leading-relaxed">
           {si
-            ? 'මෙම සූත්‍රය හිතාමතා වායු සාන්ද්‍රණයට 70% සහ පිරවීමේ මට්ටමට 30% බර ලබා දෙයි. නිවර්තන දේශගුණයේ කාබනික අපද්‍රව්‍ය පැය 36-48 ඇතුළත ඇනෙරෝබික ක්ෂය වීම ආරම්භ කරයි, එමඟින් කූඩු භෞතිකව පිරී ඉතිරී යාමට පෙර මීතේන්, ඇමෝනියා සහ H₂S මුදා හරිනු ලැබේ.'
+            ? 'මෙම සූත්‍රය හිතාමතා වායු සාන්ද්‍රණයට 70% සහ පිරවීමේ මට්ටමට 30% බර ලබා දෙයි. නිවර්තන දේශගුණයේ කාබනික අපද්‍රව්‍ය පැය 36-48 ඇතුළත ඇනෙරෝබික ක්ෂය වීම ආරම්භ කරයි, එමඟින් බදුන් භෞතිකව පිරී ඉතිරී යාමට පෙර මීතේන්, ඇමෝනියා සහ H₂S මුදා හරිනු ලැබේ.'
             : 'This formula intentionally assigns 70% weight to gas concentration and 30% to fill level. In tropical climates, organic waste begins anaerobic decomposition within 36-48 hours, releasing methane, ammonia and H₂S long before bins physically overflow. A bin at 40% capacity emitting 400 PPM poses a substantially higher health risk than a 90% full bin with clean air.'}
         </p>
       </div>

@@ -87,7 +87,7 @@ export default function DashboardPage() {
 
   const statCards = [
     {
-      label: si?'මුළු කූඩු':'Total Bins',
+      label: si?'මුළු බදුන්':'Total Bins',
       value: stats.total_bins,
       sub: si?'හෝමාගම කලාපය':'Homagama zone',
       accent: '#4A8C28',
@@ -176,7 +176,7 @@ export default function DashboardPage() {
               {si?'හෝමාගම කලාපය':'Homagama Zone'}
             </div>
             <div style={{...poppins,fontSize:'11px',color:'#6B8C6B',marginTop:'2px'}}>
-              {bins.length} {si?'කූඩු':'bins'}
+              {bins.length} {si?'බදුන්':'bins'}
             </div>
           </div>
         </div>
@@ -238,9 +238,9 @@ export default function DashboardPage() {
                 style={{
                   width:'100%',textAlign:'left',
                   padding:'10px 12px',borderRadius:'10px',marginBottom:'6px',
-                  background:PBG[a.priority_label],
-                  border:`1px solid ${PBD[a.priority_label]}`,
-                  borderLeft:`3px solid ${PC[a.priority_label]}`,
+                  background:'#fff',
+                  border:'1px solid rgba(0,0,0,0.06)',
+                  borderLeft:`4px solid ${PC[a.priority_label]}`,
                   cursor:'pointer',transition:'all 0.15s',
                 }}
               >
@@ -252,7 +252,7 @@ export default function DashboardPage() {
                   {a.gas_ppm} PPM · {a.fill_level}% {si?'පිරවීම':'fill'}
                 </div>
                 <div style={{display:'flex',alignItems:'center',gap:'6px',marginTop:'6px'}}>
-                  <div style={{flex:1,height:'4px',borderRadius:'2px',background:'rgba(0,0,0,0.06)'}}>
+                  <div style={{flex:1,height:'6px',borderRadius:'3px',background:'rgba(0,0,0,0.06)'}}>
                     <div style={{height:'100%',borderRadius:'2px',width:`${Math.min(a.health_risk,100)}%`,background:PC[a.priority_label]}}/>
                   </div>
                   <span style={{...poppins,fontSize:'10px',fontWeight:600,color:PC[a.priority_label]}}>
@@ -276,8 +276,8 @@ export default function DashboardPage() {
               <div key={s.t} style={{
                 display:'flex',alignItems:'center',gap:'8px',
                 padding:'8px 10px',borderRadius:'8px',marginBottom:'4px',
-                background:'rgba(255,255,255,0.60)',
-                border:'1px solid rgba(74,140,40,0.08)',
+                background:'#fff',
+                border:'1px solid rgba(0,0,0,0.05)',
               }}>
                 <span style={{...poppins,fontSize:'11px',fontWeight:600,color:'#4A8C28',width:'36px',flexShrink:0}}>{s.t}</span>
                 <div style={{flex:1,minWidth:0}}>
@@ -306,10 +306,10 @@ export default function DashboardPage() {
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'16px'}}>
           <div>
             <div style={{...poppins,fontWeight:700,fontSize:'14px',color:'#1A2E1A'}}>
-              {si?'සියලු කූඩු':'All Bins'}
+              {si?'සියලු බදුන්':'All Bins'}
             </div>
             <div style={{...poppins,fontSize:'11px',color:'#6B8C6B',marginTop:'2px'}}>
-              {loading ? (si?'AWS වෙතින් ලබාගනිමින්...':'Fetching from AWS...') : `${bins.length} ${si?'කූඩු':'bins'}`}
+              {loading ? (si?'AWS වෙතින් ලබාගනිමින්...':'Fetching from AWS...') : `${bins.length} ${si?'බදුන්':'bins'}`}
             </div>
           </div>
           <div style={{display:'flex',gap:'8px'}}>

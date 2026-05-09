@@ -86,3 +86,6 @@
     margin-right: 8px;
     vertical-align: middle
 }
+.login-photo-side { display: flex !important; }
+@media (max-width: 768px) { .login-photo-side { display: none !important; } }
+
