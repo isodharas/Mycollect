@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "597072143267",
+    "project_id": "mycollect-app",
+    "storage_bucket": "mycollect-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597072143267:android:434919e02e1853fa15b016",
+        "android_client_info": {
+          "package_name": "com.example.mycollect_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaRuq1B7JYG7TDm8kR07A9MAw3f3ILlY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
