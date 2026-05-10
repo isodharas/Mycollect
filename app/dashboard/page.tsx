@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { getAllBins, getDashboardStats } from '@/lib/api'
@@ -66,11 +66,23 @@ export default function DashboardPage() {
   const [stats, setStats] = useState(DEFAULT_STATS)
   const [loading, setLoading] = useState(true)
 
+  const [toast, setToast] = useState<{bin_id:string, gas:number, risk:number} | null>(null)
+  const prevCriticalIds = useRef<Set<string>>(new Set())
+
   useEffect(()=>{
     async function fetchData() {
       try {
         const [b,s] = await Promise.all([getAllBins(), getDashboardStats()])
-        if (b?.length) setBins(b)
+        if (b?.length) {
+          setBins(b)
+          const currentCritical = b.filter((bin:any) => bin.priority_label === 'CRITICAL')
+          const newCritical = currentCritical.filter((bin:any) => !prevCriticalIds.current.has(bin.bin_id))
+          if (newCritical.length > 0 && prevCriticalIds.current.size > 0) {
+            setToast({ bin_id: newCritical[0].bin_id, gas: newCritical[0].gas_ppm, risk: newCritical[0].health_risk })
+            setTimeout(() => setToast(null), 6000)
+          }
+          prevCriticalIds.current = new Set(currentCritical.map((bin:any) => bin.bin_id))
+        }
         if (s) setStats(normalizeStats(s))
       } catch { console.log('mock data') }
       finally { setLoading(false) }
@@ -118,6 +130,27 @@ export default function DashboardPage() {
 
   return (
     <div style={{display:'flex',flexDirection:'column',gap:'20px'}}>
+      {/* CRITICAL TOAST NOTIFICATION */}
+      {toast && (
+        <div style={{
+          position:'fixed', top:'20px', right:'20px', zIndex:9999,
+          background:'#DC2626', color:'#fff', borderRadius:'14px',
+          padding:'14px 18px', boxShadow:'0 8px 32px rgba(220,38,38,0.4)',
+          display:'flex', alignItems:'center', gap:'12px', maxWidth:'320px',
+          animation:'slideIn 0.3s ease',
+        }}>
+          <span style={{fontSize:'20px'}}>🚨</span>
+          <div>
+            <div style={{fontWeight:700, fontSize:'13px', fontFamily:'Poppins,sans-serif'}}>
+              {si ? 'අවදානම් ඇඟවීම!' : 'CRITICAL Alert!'} {toast.bin_id}
+            </div>
+            <div style={{fontSize:'11px', opacity:0.9, fontFamily:'Poppins,sans-serif', marginTop:'2px'}}>
+              {si ? `වායු ${toast.gas} PPM · අවදානම් ලකුණු ${toast.risk}` : `Gas ${toast.gas} PPM · Risk Score ${toast.risk}`}
+            </div>
+          </div>
+          <button onClick={()=>setToast(null)} style={{background:'rgba(255,255,255,0.2)', border:'none', color:'#fff', borderRadius:'8px', width:'24px', height:'24px', cursor:'pointer', fontSize:'14px', display:'flex', alignItems:'center', justifyContent:'center'}}>×</button>
+        </div>
+      )}
 
       {/* Stat cards */}
       <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'14px'}}>

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import { useLang } from '@/lib/LangContext'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const NAV = [
   { href: '/dashboard', key: 'overview', label: 'Overview', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
@@ -21,6 +21,22 @@ export default function Sidebar() {
   const { data: session } = useSession()
   const { lang, t } = useLang()
   const [collapsed, setCollapsed] = useState(false)
+  const [criticalCount, setCriticalCount] = useState(0)
+
+  useEffect(() => {
+    const fetchCritical = async () => {
+      try {
+        const res = await fetch('/api/proxy/catchall?path=bin')
+        const data = await res.json()
+        const bins = data.bins || []
+        const count = bins.filter((b: any) => b.priority_label === 'CRITICAL').length
+        setCriticalCount(count)
+      } catch {}
+    }
+    fetchCritical()
+    const interval = setInterval(fetchCritical, 30000)
+    return () => clearInterval(interval)
+  }, [])
   const si = lang === 'si'
   const name = session?.user?.name || 'User'
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
@@ -115,9 +131,21 @@ export default function Sidebar() {
                   background: 'linear-gradient(180deg,#A8D5A2,#4A7A5A)',
                 }} />
               )}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, opacity: active ? 1 : 0.65 }}>
-                <path d={item.icon} />
-              </svg>
+              <div style={{ position: 'relative', flexShrink: 0 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: active ? 1 : 0.65 }}>
+                  <path d={item.icon} />
+                </svg>
+                {item.key === 'alerts' && criticalCount > 0 && (
+                  <span style={{
+                    position: 'absolute', top: '-6px', right: '-6px',
+                    background: '#DC2626', color: '#fff',
+                    borderRadius: '50%', width: '14px', height: '14px',
+                    fontSize: '9px', fontWeight: 700,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: 'Poppins,sans-serif',
+                  }}>{criticalCount > 9 ? '9+' : criticalCount}</span>
+                )}
+              </div>
               {!collapsed && (
                 <span style={{ flex: 1, whiteSpace: 'nowrap' }}>{si ? t(item.key) : item.label}</span>
               )}

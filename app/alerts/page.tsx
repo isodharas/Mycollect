@@ -61,7 +61,11 @@ export default function AlertsPage() {
           })
         } catch {}
       }))
-      all.sort((a,b) => parseInt(b.timestamp) - parseInt(a.timestamp))
+      const priorityOrder = {'CRITICAL': 0, 'HIGH': 1, 'MEDIUM': 2}
+      all.sort((a,b) => {
+        const pd = (priorityOrder[a.priority as keyof typeof priorityOrder] ?? 3) - (priorityOrder[b.priority as keyof typeof priorityOrder] ?? 3)
+        return pd !== 0 ? pd : parseInt(b.timestamp) - parseInt(a.timestamp)
+      })
       setAlerts(all)
       setLoading(false)
     }
@@ -88,7 +92,7 @@ export default function AlertsPage() {
             {si ? `${unreadCount} නොකියවූ · ඉතිහාස සිදුවීම්` : `${unreadCount} unread · historical events`}
           </p>
         </div>
-        <button onClick={() => setReadIds(new Set(alerts.map(a=>a.id)))}
+        <button onClick={() => { setReadIds(new Set(alerts.map(a=>a.id))); localStorage.setItem('alerts_cleared_at', Date.now().toString()) }}
           className="px-4 py-2 rounded-xl font-mono text-[11px] font-medium text-[#5B8FA8] transition-all hover:bg-white/50"
           style={{background:'rgba(255,255,255,0.45)',border:'1px solid rgba(46,134,193,0.15)'}}>
           {si ? 'සියල්ල කියවා ඇති ලෙස සලකුණු' : 'Mark all as read'}
