@@ -14,11 +14,16 @@ export async function getAllBins(): Promise<Bin[]> {
 
     if (!realBins.length) return MOCK_BINS
 
-    // Merge: real bins override mock, mock fills the rest
+    // BIN_005 is the real sensor — use real AWS data for it only
+    // All other bins keep mock data (so CRITICAL/HIGH routes work in demo)
     const realMap = new Map(realBins.map((b: Bin) => [b.bin_id, {...b, is_real: true}]))
+    const REAL_SENSOR_BINS = ["BIN_005"]
     const merged = MOCK_BINS.map(mock => {
       const real = realMap.get(mock.bin_id)
-      return real ? {...mock, ...real, is_real: true} : mock
+      if (real && REAL_SENSOR_BINS.includes(mock.bin_id)) {
+        return {...mock, ...real, is_real: true}  // real AWS data wins for BIN_005
+      }
+      return mock  // all others keep mock CRITICAL/HIGH values for demo
     })
     return merged
   } catch {

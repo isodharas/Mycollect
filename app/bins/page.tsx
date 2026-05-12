@@ -32,7 +32,15 @@ function BinsPageInner() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getAllBins().then(b => { if (b?.length) setBins(b) }).catch(() => { }).finally(() => setLoading(false))
+    const fetchNow = () => {
+      getAllBins()
+        .then(b => { if (b?.length) setBins(b) })
+        .catch(() => {})
+        .finally(() => setLoading(false))
+    }
+    fetchNow()
+    const interval = setInterval(fetchNow, 60000)
+    return () => clearInterval(interval)
   }, [])
 
   const showToast = (msg: string, type: "success" | "error" = "success") => {
@@ -443,9 +451,16 @@ function CollectionHistory() {
   const { BIN_LOCATIONS, BIN_LOCATIONS_SI } = require('@/lib/data')
 
   useEffect(() => {
-    fetch('/api/history').then(r => r.json()).then(d => {
-      if (d.success) setHistory(d.history)
-    }).catch(() => {}).finally(() => setLoading(false))
+    const fetchHistory = () => {
+      fetch('/api/history')
+        .then(r => r.json())
+        .then(d => { if (d.success) setHistory(d.history) })
+        .catch(() => {})
+        .finally(() => setLoading(false))
+    }
+    fetchHistory()
+    const interval = setInterval(fetchHistory, 60000)
+    return () => clearInterval(interval)
   }, [])
 
   const loc = (id: string) => si ? (BIN_LOCATIONS_SI?.[id] || BIN_LOCATIONS[id] || 'හෝමාගම') : (BIN_LOCATIONS[id] || 'Homagama')
