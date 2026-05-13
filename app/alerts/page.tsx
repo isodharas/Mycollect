@@ -123,7 +123,7 @@ export default function AlertsPage() {
             const isRead = readIds.has(alert.id)
             return (
               <button key={alert.id}
-                onClick={() => { setSelectedAlert(alert); setReadIds(prev => new Set([...prev, alert.id])) }}
+                onClick={() => { setSelectedAlert(alert); setReadIds(prev => new Set(Array.from(prev).concat(alert.id))) }}
                 className="w-full text-left glass-card px-5 py-4 transition-all hover:-translate-y-0.5"
                 style={{borderLeft:`4px solid ${PC[alert.priority]}`,opacity:isRead?0.7:1}}>
                 <div className="flex items-start gap-4">
