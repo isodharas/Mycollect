@@ -6,7 +6,7 @@ const S: Record<Priority,string> = {
   CRITICAL:'p-critical', HIGH:'p-high', MEDIUM:'p-medium', LOW:'p-low'
 }
 const SI: Record<Priority,string> = {
-  CRITICAL:'අවදානම්', HIGH:'ඉහළ', MEDIUM:'මධ්‍යම', LOW:'අඩු'
+  CRITICAL:'අවදානම්', HIGH:'ඉහළ', MEDIUM:'මධ්‍යම', LOW:'සාමාන්‍ය'
 }
 
 export default function PriorityBadge({priority,size='md'}:{priority:Priority;size?:'sm'|'md'}) {

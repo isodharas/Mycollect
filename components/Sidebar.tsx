@@ -22,6 +22,13 @@ export default function Sidebar() {
   const { lang, t } = useLang()
   const [collapsed, setCollapsed] = useState(false)
   const [criticalCount, setCriticalCount] = useState(0)
+  const pathname = usePathname()
+  useEffect(() => { 
+    if (pathname === '/alerts') {
+      setCriticalCount(0)
+      localStorage.setItem('alerts_visited', Date.now().toString())
+    }
+  }, [pathname])
 
   useEffect(() => {
     const fetchCritical = async () => {
@@ -30,7 +37,11 @@ export default function Sidebar() {
         const data = await res.json()
         const bins = data.bins || []
         const count = bins.filter((b: any) => b.priority_label === 'CRITICAL').length
-        setCriticalCount(count)
+        const visited = localStorage.getItem('alerts_visited')
+        const visitedTime = visited ? parseInt(visited) : 0
+        const fiveMinAgo = Date.now() - 5 * 60 * 1000
+        if (visitedTime > fiveMinAgo) setCriticalCount(0)
+        else setCriticalCount(count)
       } catch {}
     }
     fetchCritical()

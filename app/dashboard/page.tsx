@@ -23,11 +23,7 @@ const PC: Record<string,string> = {CRITICAL:'#DC2626',HIGH:'#EA580C',MEDIUM:'#D9
 const PBG: Record<string,string> = {CRITICAL:'rgba(220,38,38,.05)',HIGH:'rgba(234,88,12,.05)',MEDIUM:'rgba(217,119,6,.05)',LOW:'rgba(22,163,74,.05)'}
 const PBD: Record<string,string> = {CRITICAL:'rgba(220,38,38,.15)',HIGH:'rgba(234,88,12,.15)',MEDIUM:'rgba(217,119,6,.15)',LOW:'rgba(22,163,74,.15)'}
 
-const SCHED = [
-  {t:'09:00',bins:'BIN_001 + BIN_005',zone:'North Zone · Truck 4',zSi:'උතුරු කලාපය · ට්‍රක් 4',p:'CRITICAL' as const},
-  {t:'11:30',bins:'BIN_002 + BIN_006',zone:'East Zone · Truck 2',zSi:'නැගෙනහිර · ට්‍රක් 2',p:'HIGH' as const},
-  {t:'14:00',bins:'BIN_003 + BIN_004',zone:'Central · Truck 1',zSi:'මධ්‍යම · ට්‍රක් 1',p:'MEDIUM' as const},
-]
+// Schedule built dynamically from live bin data — no hardcoded values
 
 const DEFAULT_STATS = {
   total_bins:6, by_priority:{LOW:1,MEDIUM:0,HIGH:1,CRITICAL:4},
@@ -190,7 +186,7 @@ export default function DashboardPage() {
         gridTemplateColumns:'1fr 300px',
         borderRadius:'16px',
         overflow:'hidden',
-        height:'460px',
+        height:'auto',minHeight:'460px',
         border:'1px solid rgba(255,255,255,0.72)',
         boxShadow:'0 4px 24px rgba(45,90,27,0.08)',
       }}>
@@ -216,7 +212,7 @@ export default function DashboardPage() {
 
         {/* Right feed panel */}
         <div style={{
-          display:'flex',flexDirection:'column',overflow:'hidden',
+          display:'flex',flexDirection:'column',overflow:'visible',
           background:'rgba(255,255,255,0.65)',
           backdropFilter:'blur(16px)',
           borderLeft:'1px solid rgba(255,255,255,0.60)',
@@ -256,68 +252,44 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          {/* Live Alerts */}
-          <div style={{padding:'12px 14px 8px',flexShrink:0,borderBottom:'1px solid rgba(74,140,40,0.06)'}}>
-            <div style={{...poppins,fontWeight:700,fontSize:'13px',color:'#1A2E1A'}}>
-              {si?'සජීව අනතුරු':'Live Alerts'}
-            </div>
-          </div>
-
-          <div style={{flex:1,overflowY:'auto',padding:'8px'}}>
-            {alerts.map(a=>(
-              <button
-                key={a.bin_id}
-                onClick={()=>router.push('/bins')}
-                style={{
-                  width:'100%',textAlign:'left',
-                  padding:'10px 12px',borderRadius:'10px',marginBottom:'6px',
-                  background:'#fff',
-                  border:'1px solid rgba(0,0,0,0.06)',
-                  borderLeft:`4px solid ${PC[a.priority_label]}`,
-                  cursor:'pointer',transition:'all 0.15s',
-                }}
-              >
-                <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'4px'}}>
-                  <span style={{...poppins,fontSize:'12px',fontWeight:600,color:'#1A2E1A'}}>{a.bin_id}</span>
-                  <PriorityBadge priority={a.priority_label} size="sm"/>
-                </div>
-                <div style={{...poppins,fontSize:'11px',color:'#6B8C6B'}}>
-                  {a.gas_ppm} PPM · {a.fill_level}% {si?'පිරවීම':'fill'}
-                </div>
-                <div style={{display:'flex',alignItems:'center',gap:'6px',marginTop:'6px'}}>
-                  <div style={{flex:1,height:'6px',borderRadius:'3px',background:'rgba(0,0,0,0.06)'}}>
-                    <div style={{height:'100%',borderRadius:'2px',width:`${Math.min(a.health_risk,100)}%`,background:PC[a.priority_label]}}/>
-                  </div>
-                  <span style={{...poppins,fontSize:'10px',fontWeight:600,color:PC[a.priority_label]}}>
-                    {si?'අවදානම':'Risk'} {a.health_risk}
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Today's Schedule */}
+          {/* CRITICAL + HIGH bin status */}
           <div style={{
-            padding:'10px',flexShrink:0,
-            borderTop:'1px solid rgba(74,140,40,0.08)',
+            padding:'12px',flex:1,overflowY:'auto',
             background:'rgba(255,255,255,0.35)',
+            backdropFilter:'blur(12px)',
           }}>
-            <div style={{...poppins,fontWeight:700,fontSize:'12px',color:'#1A2E1A',marginBottom:'8px'}}>
-              {si?'අද කාලසටහන':"Today's Schedule"}
+            <div style={{...poppins,fontWeight:700,fontSize:'12px',color:'#1A2E1A',marginBottom:'10px'}}>
+              {si?'අවදානම් බදුන්':'Critical & High Bins'}
             </div>
-            {SCHED.map(s=>(
-              <div key={s.t} style={{
-                display:'flex',alignItems:'center',gap:'8px',
-                padding:'8px 10px',borderRadius:'8px',marginBottom:'4px',
-                background:'#fff',
-                border:'1px solid rgba(0,0,0,0.05)',
+            {bins.filter(b=>b.priority_label==='CRITICAL'||b.priority_label==='HIGH').length===0 ? (
+              <div style={{...poppins,fontSize:'11px',color:'#6B8C6B',textAlign:'center',padding:'12px 0'}}>
+                {si?'අවදානම් බදුන් නැත':'No critical or high bins ✓'}
+              </div>
+            ) : bins.filter(b=>b.priority_label==='CRITICAL'||b.priority_label==='HIGH')
+              .sort((a,b)=>b.health_risk-a.health_risk)
+              .map(b=>(
+              <div key={b.bin_id} style={{
+                padding:'12px 14px',borderRadius:'12px',marginBottom:'8px',
+                background:'rgba(255,255,255,0.75)',
+                backdropFilter:'blur(8px)',
+                border:'1px solid rgba(255,255,255,0.85)',
+                boxShadow:'0 2px 8px rgba(45,90,27,0.06)',
+                borderLeft:`4px solid ${PC[b.priority_label]}`,
               }}>
-                <span style={{...poppins,fontSize:'11px',fontWeight:600,color:'#4A8C28',width:'36px',flexShrink:0}}>{s.t}</span>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{...poppins,fontSize:'11px',fontWeight:600,color:'#1A2E1A',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{s.bins}</div>
-                  <div style={{...poppins,fontSize:'10px',color:'#6B8C6B',marginTop:'1px'}}>{si?s.zSi:s.zone}</div>
+                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'6px'}}>
+                  <span style={{...poppins,fontSize:'12px',fontWeight:700,color:'#1A2E1A'}}>{b.bin_id}</span>
+                  <PriorityBadge priority={b.priority_label} size="sm"/>
                 </div>
-                <PriorityBadge priority={s.p} size="sm"/>
+                <div style={{display:'flex',gap:'10px',marginBottom:'6px'}}>
+                  <span style={{...poppins,fontSize:'11px',color:PC[b.priority_label],fontWeight:600}}>{b.gas_ppm} PPM</span>
+                  <span style={{...poppins,fontSize:'11px',color:'#6B8C6B'}}>{b.fill_level}% {si?'පිරවීම':'fill'}</span>
+                </div>
+                <div style={{display:'flex',alignItems:'center',gap:'6px'}}>
+                  <div style={{flex:1,height:'6px',borderRadius:'3px',background:'rgba(0,0,0,0.06)'}}>
+                    <div style={{height:'100%',borderRadius:'3px',width:`${Math.min(b.health_risk,100)}%`,background:PC[b.priority_label]}}/>
+                  </div>
+                  <span style={{...poppins,fontSize:'10px',fontWeight:600,color:PC[b.priority_label]}}>{si?'අවදානම':'Risk'} {b.health_risk}</span>
+                </div>
               </div>
             ))}
           </div>

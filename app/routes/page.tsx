@@ -77,7 +77,7 @@ export default function RoutesPage() {
   // Build route from CRITICAL + HIGH bins
   useEffect(() => {
     const urgent = bins
-      .filter(b => b.priority_label === "CRITICAL" || b.priority_label === "HIGH")
+      .filter(b => b.priority_label === "CRITICAL" || b.priority_label === "HIGH" || b.priority_label === "MEDIUM")
       .sort((a, b) => b.health_risk - a.health_risk)
       .map(b => ({
         ...b,
@@ -169,7 +169,7 @@ export default function RoutesPage() {
       await collectBin(binId)
       showToast(binId + (si?" එකතු කරන ලදී — සංවේදකය 0 PPM, 0% පිරවීම ලෙස යාවත්කාලීන විය":" collected — sensor updated to 0 PPM, 0% fill"))
       // Update local state immediately
-      setRoute(prev => prev.map(b => b.bin_id === binId ? {...b, collected:true, collectTime: new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}), gas_ppm:0, fill_level:0, health_risk:0, priority_label:"LOW" as Priority} : b))
+      setRoute(prev => prev.map(b => b.bin_id === binId ? {...b, collected:true, collectTime: new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}), gas_ppm:0, fill_level:0, health_risk:0, priority_label:si?"සාමාන්‍ය":"LOW" as Priority} : b))
       // Refresh from AWS after a short delay
       setTimeout(() => {
         getAllBins().then(b => { if (b?.length) setBins(b) }).catch(()=>{})
@@ -340,14 +340,6 @@ export default function RoutesPage() {
                     )}
                   </div>
 
-                  {/* Action */}
-                  {dispatched && !bin.collected && (
-                    <button onClick={()=>handleCollect(bin.bin_id)} disabled={isCollecting}
-                      className="px-3 py-2 rounded-lg font-semibold text-[11px] text-white transition-all hover:-translate-y-0.5 disabled:opacity-50 flex-shrink-0"
-                      style={{background:"linear-gradient(135deg,"+col+","+col+"cc)",boxShadow:"0 2px 10px "+col+"33"}}>
-                      {isCollecting ? "..." : (si?"එකතු කරන්න":"Collect")}
-                    </button>
-                  )}
                   {bin.collected && (
                     <div className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-white text-[12px]"
                       style={{background:"#22C55E"}}>\u2713</div>

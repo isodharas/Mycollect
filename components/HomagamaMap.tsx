@@ -33,12 +33,12 @@ export default function HomagamaMap() {
 
   const fetchAllBins = useCallback(async () => {
     try {
-      const res = await fetch(`${API_BASE}/bin`)
+      const res = await fetch('/api/proxy/catchall?path=bin', { cache:'no-store' })
       const data = await res.json()
-      const awsBins: any[] = data.bins || data.items || []
-      if (!awsBins.length) return
+      const awsBins: any[] = Array.isArray(data) ? data : (data.bins || data.items || [])
+      if (!awsBins.length) { setLastUpdated(new Date().toLocaleTimeString()); return }
       setBins(prev => prev.map(b => {
-        const live = awsBins.find((a: any) => a.bin_id === b.id)
+        const live = awsBins.find((a: any) => a.bin_id === b.id || a.bin_id === b.id.replace('_',''))
         if (!live) return b
         return {
           ...b,
@@ -49,7 +49,7 @@ export default function HomagamaMap() {
         }
       }))
       setLastUpdated(new Date().toLocaleTimeString())
-    } catch { }
+    } catch { setBins(BINS_DEFAULT); setLastUpdated(new Date().toLocaleTimeString()) }
   }, [])
 
   useEffect(() => {

@@ -34,7 +34,7 @@ export default function LandingPage() {
       {/* NAV */}
       <nav className={`nav${scrolled ? ' scrolled' : ''}`}>
         <div className="nav-logo">
-          <span style={{fontWeight:800,fontSize:18,letterSpacing:"-0.02em"}}><span style={{color:"#1A3328"}}>My</span><span style={{color:"#4A8C28"}}>Collect</span></span>
+          <span style={{fontWeight:800,fontSize:26,letterSpacing:"-0.02em"}}><span style={{color:"#1A3328"}}>My</span><span style={{color:"#4A8C28"}}>Collect</span></span>
         </div>
         <div className="nav-links">
           <a href="#how">{si ? 'ක්‍රියා කරන ආකාරය' : 'How It Works'}</a>

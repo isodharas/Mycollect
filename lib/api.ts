@@ -16,16 +16,15 @@ export async function getAllBins(): Promise<Bin[]> {
 
     // BIN_005 is the real sensor — use real AWS data for it only
     // All other bins keep mock data (so CRITICAL/HIGH routes work in demo)
-    const realMap = new Map(realBins.map((b: Bin) => [b.bin_id, {...b, is_real: true}]))
-    const REAL_SENSOR_BINS = ["BIN_005"]
-    const merged = MOCK_BINS.map(mock => {
-      const real = realMap.get(mock.bin_id)
-      if (real && REAL_SENSOR_BINS.includes(mock.bin_id)) {
-        return {...mock, ...real, is_real: true}  // real AWS data wins for BIN_005
-      }
-      return mock  // all others keep mock CRITICAL/HIGH values for demo
+    // Return only properly formatted bins (BIN_XXX format), no test/duplicate entries
+    const validBins = realBins.filter((b: Bin) => /^BIN_\d+$/.test(b.bin_id))
+    const mapped = validBins.map((b: Bin) => ({...b, is_real: true}))
+    // Merge with MOCK_BINS: use real data if it has readings, else keep mock values for demo
+    return MOCK_BINS.map(mock => {
+      const real = mapped.find(r => r.bin_id === mock.bin_id)
+      if (real && (Number(real.gas_ppm) > 0 || Number(real.fill_level) > 0)) return real
+      return mock
     })
-    return merged
   } catch {
     return MOCK_BINS
   }
