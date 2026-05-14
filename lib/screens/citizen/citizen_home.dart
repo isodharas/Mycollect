@@ -243,15 +243,10 @@ class _HomeTabState extends State<_HomeTab> {
   Map<String, dynamic> _schedule = {};
 
   static const List<String> _heroImages = [
-    'https://plus.unsplash.com/premium_photo-1764187003756-38e7f311e8fd?w=900&auto=format&fit=crop&q=60',
-    'https://images.unsplash.com/flagged/photo-1567498975675-a3adf1574cb0?w=900&auto=format&fit=crop&q=60',
-    'https://images.unsplash.com/photo-1566299597203-225f611b865f?w=900&auto=format&fit=crop&q=60',
-    'https://images.unsplash.com/photo-1600255821058-c4f89958d700?w=900&auto=format&fit=crop&q=60',
-    'https://images.unsplash.com/photo-1663403766377-9e10d398a26e?q=80&w=987&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1734279135089-a3cb47fa52bf?w=900&auto=format&fit=crop&q=60',
+    'https://images.unsplash.com/photo-1610141160723-d2d346e73766?q=80&w=987&auto=format&fit=crop',
   ];
 
-  // Bin location labels (unchanged from your original)
+  // Bin location labels
   Map<String, String> get _binLocations => {
     'BIN_001': LangService.t('North Market',         'උතුරු වෙළඳපොළ'),
     'BIN_002': LangService.t('Malapalla Junction',   'මාලාපල්ල හන්දිය'),
@@ -1828,51 +1823,6 @@ class _ProfileTab extends StatelessWidget {
   final VoidCallback? onReportProblem;
   const _ProfileTab({required this.userName, required this.phone, required this.isRatepayer, required this.registrationNumber, required this.onSignOut, this.onReportProblem});
 
-  void _showPasswordDialog(BuildContext context) {
-    final currentCtrl = TextEditingController();
-    final newCtrl = TextEditingController();
-    final confirmCtrl = TextEditingController();
-    bool loading = false;
-    String? error;
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(LangService.t('Change Password', 'මුරපදය වෙනස් කරන්න'), style: GoogleFonts.poppins(fontWeight: FontWeight.w700, fontSize: 18)),
-          content: Column(mainAxisSize: MainAxisSize.min, children: [
-            TextField(controller: currentCtrl, obscureText: true, decoration: InputDecoration(labelText: LangService.t('Current Password', 'වර්තමාන මුරපදය'), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)), focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: _primaryMid, width: 2)))),
-            const SizedBox(height: 12),
-            TextField(controller: newCtrl, obscureText: true, decoration: InputDecoration(labelText: LangService.t('New Password', 'නව මුරපදය'), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)), focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: _primaryMid, width: 2)))),
-            const SizedBox(height: 12),
-            TextField(controller: confirmCtrl, obscureText: true, decoration: InputDecoration(labelText: LangService.t('Confirm Password', 'මුරපදය තහවුරු කරන්න'), border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)), focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: _primaryMid, width: 2)))),
-            if (error != null) ...[const SizedBox(height: 8), Text(error!, style: GoogleFonts.poppins(color: _criticalColor, fontSize: 12))],
-          ]),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: Text(LangService.t('Cancel', 'අවලංගු'), style: GoogleFonts.poppins(color: _greyText))),
-            ElevatedButton(
-              onPressed: loading ? null : () async {
-                if (newCtrl.text != confirmCtrl.text) { setDialogState(() => error = LangService.t('Passwords do not match', 'මුරපද නොගැලපේ')); return; }
-                if (newCtrl.text.length < 4) { setDialogState(() => error = LangService.t('Min 4 characters', 'අවම අකුරු 4')); return; }
-                setDialogState(() { loading = true; error = null; });
-                final result = await ApiService.updatePassword(phone: phone, currentPassword: currentCtrl.text, newPassword: newCtrl.text);
-                setDialogState(() => loading = false);
-                if (result['success'] == true) {
-                  Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(LangService.t('Password updated!', 'මුරපදය යාවත්කාලීන කෙරිණි!')), backgroundColor: _primaryMid, behavior: SnackBarBehavior.floating, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), margin: const EdgeInsets.all(16)));
-                } else {
-                  setDialogState(() => error = result['message'] ?? LangService.t('Failed', 'අසාර්ථකයි'));
-                }
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: _primaryMid, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-              child: loading ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : Text(LangService.t('Update', 'යාවත්කාලීන'), style: GoogleFonts.poppins(fontWeight: FontWeight.w700)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -1923,22 +1873,6 @@ class _ProfileTab extends StatelessWidget {
               label: Text(LangService.t('Report a Problem', 'ගැටළුවක් වාර්තා කරන්න'), style: GoogleFonts.poppins(fontWeight: FontWeight.w700, fontSize: 14)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: _accentOrange,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                elevation: 0,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () => _showPasswordDialog(context),
-              icon: const Icon(Icons.lock_reset_rounded, size: 18),
-              label: Text(LangService.t('Change Password', 'මුරපදය වෙනස් කරන්න'), style: GoogleFonts.poppins(fontWeight: FontWeight.w700, fontSize: 14)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _primaryMid,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),

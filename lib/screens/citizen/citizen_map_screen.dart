@@ -226,6 +226,16 @@ class _CitizenMapScreenState extends State<CitizenMapScreen> {
             color: Colors.black.withValues(alpha: 0.08), blurRadius: 16)],
       ),
       child: Column(children: [
+        Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          GestureDetector(
+            onTap: () => setState(() => _selectedBin = null),
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(8)),
+              child: const Icon(Icons.close, size: 18, color: Colors.grey),
+            ),
+          ),
+        ]),
         Row(children: [
           Container(
             width: 44, height: 44,

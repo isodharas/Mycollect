@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'screens/role_selection_screen.dart';
 import 'screens/language_screen.dart';
 import 'screens/citizen/citizen_home.dart';
 import 'screens/worker/worker_home.dart';

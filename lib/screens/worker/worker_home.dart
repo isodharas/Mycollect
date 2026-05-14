@@ -194,7 +194,7 @@ class _WorkerHomeState extends State<WorkerHome> {
                 ),
                 const SizedBox(width: 12),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(LangService.t("Today's Route", 'අදගේ මාර්ගය'),
+                  Text(LangService.t("Today's Route", 'අද මාර්ගය'),
                       style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white)),
                   Text(LangService.t('Homagama Municipal Council', 'හෝමාගම මහ නගර සභා'),
                       style: GoogleFonts.poppins(fontSize: 11, color: Colors.white70)),

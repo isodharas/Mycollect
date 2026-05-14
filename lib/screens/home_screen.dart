@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Navigator.pushAndRemoveUntil(
                 context,
                 PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => const LoginScreen(),
+                  pageBuilder: (_, __, ___) => const LoginScreen(role: 'citizen'),
                   transitionsBuilder: (_, animation, __, child) =>
                       FadeTransition(opacity: animation, child: child),
                   transitionDuration: const Duration(milliseconds: 400),

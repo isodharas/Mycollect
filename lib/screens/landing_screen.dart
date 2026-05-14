@@ -144,7 +144,7 @@ class LandingScreen extends StatelessWidget {
                       child: OutlinedButton(
                         onPressed: () => Navigator.push(context,
                             MaterialPageRoute(
-                                builder: (_) => const LoginScreen())),
+                                builder: (_) => const LoginScreen(role: 'citizen'))),
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
                               color: Colors.white.withValues(alpha: 0.3),
@@ -275,7 +275,7 @@ class LandingScreen extends StatelessWidget {
                             ],
                             onTap: () => Navigator.push(context,
                                 MaterialPageRoute(
-                                    builder: (_) => const LoginScreen())),
+                                    builder: (_) => const LoginScreen(role: 'citizen'))),
                           ),
                         ),
                       ],
