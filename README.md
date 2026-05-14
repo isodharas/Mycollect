@@ -1,88 +1,47 @@
-# MyCollect Dashboard — Next.js 14
+# MyCollect — Web Dashboard
+AI-Powered IoT Waste Management System for Homagama Municipal Council, Sri Lanka.
 
-AI-Powered Waste Intelligence Dashboard for Homagama Municipal Council.
+## Prerequisites
+- Node.js v18 or higher
+- npm v9 or higher
+- AWS account with DynamoDB tables configured (ap-southeast-2)
 
-## Stack
-- **Next.js 14** (App Router)
-- **TypeScript**
-- **Tailwind CSS** (custom design system)
-- **Recharts** (charts)
-- **AWS API Gateway** (your live backend)
+## Setup Instructions
 
-## Setup
+### 1. Clone the repository
+git clone https://github.com/isodharas/Mycollect.git
+cd Mycollect
+git checkout web-dashboard
 
-```bash
-# 1. Install dependencies
+### 2. Install dependencies
 npm install
 
-# 2. Set your API URL (already pre-configured to your AWS endpoint)
-# Edit next.config.mjs if needed:
-# NEXT_PUBLIC_API_URL=https://g7oob1ovd6.execute-api.ap-southeast-2.amazonaws.com/prod
+### 3. Configure environment variables
+Create a .env.local file in the root directory:
+MYCOLLECT_AWS_ACCESS_KEY_ID=your_aws_access_key
+MYCOLLECT_AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+NEXTAUTH_SECRET=any_random_string
+NEXTAUTH_URL=http://localhost:3000
 
-# 3. Run dev server
+Note: AWS credentials must use the MYCOLLECT_ prefix. Standard AWS_ prefix is reserved by Next.js and will cause build failures.
+
+### 4. Run the development server
 npm run dev
-```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open http://localhost:3000 in your browser.
 
-## Pages
+## Demo Credentials
+- Admin: admin@homagama.lk / admin123
+- Demo bins: BIN_001 to BIN_005
+- Demo ratepayers: HMC-2024-001 to HMC-2024-005
+- Workers: WRK-001 PIN 1234, WRK-002 PIN 5678, WRK-003 PIN 9012
 
-| Route | Description |
-|-------|-------------|
-| `/` | Landing page — hero, stats ticker, features, CTA |
-| `/dashboard` | Overview — stats, live map, alerts, charts, bin table |
-| `/bins` | All bins grid with search + priority filter |
-| `/routes` | Collection routes with map preview |
-| `/analytics` | Full charts — health trend, gas, fill level, priority donut |
-| `/alerts` | All alerts sorted by severity |
-| `/reports` | Export CSV/PDF reports |
+## Tech Stack
+- Next.js 14, TypeScript 5, Tailwind CSS
+- AWS Lambda, DynamoDB, API Gateway (ap-southeast-2)
+- OpenStreetMap + Leaflet.js, NextAuth.js
 
-## API Integration
-
-All API calls are in `lib/api.ts`. The dashboard automatically falls back to mock data if the API is unreachable.
-
-**Live endpoints used:**
-- `GET /bin` — All bins latest status
-- `GET /bin/{id}` — Single bin
-- `GET /bin/{id}/history` — Historical data
-- `GET /bin/priority/{level}` — Filter by priority
-- `GET /dashboard/stats` — Dashboard statistics
-
-## Design System
-
-Custom dark eco-futuristic theme:
-- **Fonts:** Bebas Neue (display) · Barlow Condensed (headings) · Barlow (body) · JetBrains Mono (data)
-- **Colors:** Deep void black background, #22c55e green accent, red/orange/amber priority palette
-- **Components:** StatCard, BinCard, BinTable, PriorityBadge, FillBar, Sidebar, Topbar
-
-## Project Structure
-
-```
-app/
-  page.tsx              ← Landing page
-  dashboard/page.tsx    ← Main dashboard
-  bins/page.tsx         ← Bins grid
-  routes/page.tsx       ← Routes
-  analytics/page.tsx    ← Charts
-  alerts/page.tsx       ← Alerts
-  reports/page.tsx      ← Reports
-
-components/
-  Sidebar.tsx
-  Topbar.tsx
-  StatCard.tsx
-  BinCard.tsx
-  BinTable.tsx
-  PriorityBadge.tsx
-  FillBar.tsx
-  DashboardCharts.tsx
-  charts/
-    HealthTrendChart.tsx
-    PriorityDonutChart.tsx
-    GasAndFillCharts.tsx
-
-lib/
-  api.ts        ← AWS API calls
-  types.ts      ← TypeScript types
-  data.ts       ← Mock data + helpers
-```
+## Minimum Requirements
+- RAM: 4GB
+- OS: macOS, Windows, or Linux
+- Browser: Chrome, Firefox, or Safari (latest)
