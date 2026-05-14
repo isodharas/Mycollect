@@ -169,7 +169,7 @@ export default function RoutesPage() {
       await collectBin(binId)
       showToast(binId + (si?" එකතු කරන ලදී — සංවේදකය 0 PPM, 0% පිරවීම ලෙස යාවත්කාලීන විය":" collected — sensor updated to 0 PPM, 0% fill"))
       // Update local state immediately
-      setRoute(prev => prev.map(b => b.bin_id === binId ? {...b, collected:true, collectTime: new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}), gas_ppm:0, fill_level:0, health_risk:0, priority_label:si?"සාමාන්‍ය":"LOW" as Priority} : b))
+      setRoute(prev => prev.map(b => b.bin_id === binId ? {...b, collected:true, collectTime: new Date().toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"}), gas_ppm:0, fill_level:0, health_risk:0, priority_label:"LOW" as Priority} : b))
       // Refresh from AWS after a short delay
       setTimeout(() => {
         getAllBins().then(b => { if (b?.length) setBins(b) }).catch(()=>{})

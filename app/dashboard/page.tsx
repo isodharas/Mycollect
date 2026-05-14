@@ -73,7 +73,7 @@ export default function DashboardPage() {
           setBins(b)
           const currentCritical = b.filter((bin:any) => bin.priority_label === 'CRITICAL')
           const newCritical = currentCritical.filter((bin:any) => !prevCriticalIds.current.has(bin.bin_id))
-          if (newCritical.length > 0 && prevCriticalIds.current.size > 0) {
+          if (newCritical.length > 0) {
             setToast({ bin_id: newCritical[0].bin_id, gas: newCritical[0].gas_ppm, risk: newCritical[0].health_risk })
             setTimeout(() => setToast(null), 6000)
           }
