@@ -422,21 +422,7 @@ class _HomeTabState extends State<_HomeTab> {
                               style: GoogleFonts.poppins(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800),
                             ),
                             const SizedBox(height: 10),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: _criticalCount > 0 ? _criticalColor.withValues(alpha: 0.9) : _primaryMid.withValues(alpha: 0.9),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                Icon(_criticalCount > 0 ? Icons.warning_rounded : Icons.check_circle_rounded, color: Colors.white, size: 14),
-                                const SizedBox(width: 6),
-                                Text(
-                                  _criticalCount > 0 ? '$_criticalCount critical bin${_criticalCount == 1 ? '' : 's'} need attention' : 'All bins are safe',
-                                  style: GoogleFonts.poppins(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
-                                ),
-                              ]),
-                            ),
+
                           ],
                         ),
                       ),
